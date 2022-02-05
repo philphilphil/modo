@@ -1,4 +1,4 @@
-//use dialoguer::{theme::ColorfulTheme, Select};
+use dialoguer::{theme::ColorfulTheme, Select};
 use std::fs;
 use std::fs::DirEntry;
 use std::io;
@@ -8,14 +8,30 @@ use todo::*;
 
 fn read_md_file(file: &DirEntry, todos: &mut Vec<Todo>) {
     if file.file_name().to_str().unwrap().ends_with("md") {
-        //println!("{:?}", file);
         let data = fs::read_to_string(file.path()).expect("Unable to read file");
 
+        let mut line_no = 1;
         for line in data.lines() {
-            if line.starts_with("- [ ]") {
-                let todo = Todo::new(&line[6..line.len()], file.file_name().to_str().unwrap());
+            if line.starts_with("- [x]") {
+                let todo = Todo::new(
+                    &line[6..line.len()],
+                    file.file_name().to_str().unwrap(),
+                    line_no,
+                    true,
+                    file.path().to_str().unwrap(),
+                );
+                todos.push(todo);
+            } else if line.starts_with("- [ ]") {
+                let todo = Todo::new(
+                    &line[6..line.len()],
+                    file.file_name().to_str().unwrap(),
+                    line_no,
+                    false,
+                    file.path().to_str().unwrap(),
+                );
                 todos.push(todo);
             }
+            line_no += 1;
         }
     }
 }
@@ -37,28 +53,25 @@ fn load_data(dir: &Path, todos: &mut Vec<Todo>) -> io::Result<()> {
 }
 
 fn main() {
-    // TODO: Replace with glob?
     let mut todos: Vec<Todo> = vec![];
 
     load_data(Path::new("/Users/phil/TestingNotes"), &mut todos).unwrap();
 
-    for t in todos {
-        println!("Todo: {}", t.name);
-    }
+    // for t in todos {
+    //     println!(
+    //         "Todo: {}  Done:   {}  Line:   {}  Path    {}",
+    //         t.name, t.done, t.line_no, t.filepath
+    //     );
+    // }
 
-    // let selections = &[
-    //     "Ice Cream",
-    //     "Vanilla Cupcake",
-    //     "Chocolate Muffin",
-    //     "A Pile of sweet, sweet mustard",
-    // ];
+    let todo_strings:Vec<String> = todos.iter().map(|p| p.name.clone()).collect();
 
-    // let selection = Select::with_theme(&ColorfulTheme::default())
-    //     .with_prompt("Pick your flavor")
-    //     .default(0)
-    //     .items(&selections[..])
-    //     .interact()
-    //     .unwrap();
+    let selection = Select::with_theme(&ColorfulTheme::default())
+        .with_prompt("Tick todo:")
+        .default(0)
+        .items(&todo_strings)
+        .interact()
+        .unwrap();
 
-    // println!("Enjoy your {}!", selections[selection]);
+    println!("Marked {} as done!", todos[selection].name);
 }
