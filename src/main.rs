@@ -1,3 +1,4 @@
+use dialoguer::Input;
 use dialoguer::{theme::ColorfulTheme, Select};
 use std::fs;
 use std::fs::DirEntry;
@@ -64,14 +65,31 @@ fn main() {
     //     );
     // }
 
-    let todo_strings:Vec<String> = todos.iter().map(|p| p.name.clone()).collect();
+    let todo_strings: Vec<String> = todos.iter().map(|p| p.name.clone()).collect();
 
-    let selection = Select::with_theme(&ColorfulTheme::default())
-        .with_prompt("Tick todo:")
-        .default(0)
-        .items(&todo_strings)
+    let mail: String = Input::new()
+        .with_prompt(".. where ")
+        .validate_with(|input: &String| -> Result<(), &str> {
+            if input.contains('@') {
+                Ok(())
+            } else {
+                Err("This is not a mail address")
+            }
+        })
         .interact()
         .unwrap();
 
-    println!("Marked {} as done!", todos[selection].name);
+    if mail == "@todos" {
+        loop {
+            let selection = Select::with_theme(&ColorfulTheme::default())
+                .with_prompt("Tick todo:")
+                .clear(true)
+                .default(0)
+                .items(&todo_strings)
+                .interact_opt()
+                .unwrap();
+
+            println!("Marked {} as done!", todos[selection.unwrap()].name);
+        }
+    }
 }
