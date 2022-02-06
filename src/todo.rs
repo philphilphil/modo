@@ -1,3 +1,5 @@
+use std::fmt::{Display,Formatter,Result};
+
 pub struct Todo {
     pub name: String,
     pub filename: String,
@@ -17,8 +19,14 @@ impl Todo {
             filepath: filepath.to_string()
         }
     }
+}
 
-    pub fn to_string(&self) -> String {
-        format!("{} {}", if self.done { "✅" } else { "➔" }, self.name)
+impl Display for Todo {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        let mut todo_state = "➔";
+        if self.done {
+            todo_state = "✅"
+        }
+        write!(f, "{} {}", todo_state, self.name)
     }
 }
