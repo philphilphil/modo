@@ -57,32 +57,17 @@ fn main() {
     let mut todos: Vec<Todo> = vec![];
 
     load_data(Path::new("/Users/phil/TestingNotes"), &mut todos).unwrap();
+    let todo_strings: Vec<String> = todos.iter().map(|t| t.to_string()).collect();
 
-    // for t in todos {
-    //     println!(
-    //         "Todo: {}  Done:   {}  Line:   {}  Path    {}",
-    //         t.name, t.done, t.line_no, t.filepath
-    //     );
-    // }
-
-    let todo_strings: Vec<String> = todos.iter().map(|p| p.name.clone()).collect();
-
-    let mail: String = Input::new()
+    let query: String = Input::new()
         .with_prompt(".. where ")
-        .validate_with(|input: &String| -> Result<(), &str> {
-            if input.contains('@') {
-                Ok(())
-            } else {
-                Err("This is not a mail address")
-            }
-        })
         .interact()
         .unwrap();
 
-    if mail == "@todos" {
+    if query == "all" {
         loop {
             let selection = Select::with_theme(&ColorfulTheme::default())
-                .with_prompt("Tick todo:")
+                .with_prompt("Choose todo to toggle:")
                 .clear(true)
                 .default(0)
                 .items(&todo_strings)

@@ -17,4 +17,8 @@ impl Todo {
             filepath: filepath.to_string()
         }
     }
+
+    pub fn to_string(&self) -> String {
+        format!("{} {}", if self.done { "✅" } else { "➔" }, self.name)
+    }
 }
