@@ -1,9 +1,10 @@
 # modo
-markdown todo cli interface is a smal application to query markdown todos with a sql like syntax.
+markdown todo cli interface is a small application to query markdown todos with a SQL like syntax.
 
 ## Filter Queries
 If no filter for "done" is found in the query, "done equals false" will automatically be added.
 An empty query will return all open todos.
+Multiple filters can be used with "and" between them.
 
 ### Properties
 Filters always bear upon a single todo.
@@ -29,18 +30,11 @@ Filters always bear upon a single todo.
 - heading e "Daily" (same result as query overhead)
 - path e "Work" oba filename
 
-## Display options (TBD)
-You can specify what information about the todo you want to see with the "select" operator, it does not matter if its before or after the filter query, but they have to be seperated with a semicolon. The properties are the same as in the filters.
-
-Default display is: Name, filename
-
-### Operators
-
-
-
 ### Examples
 - select name path heading done where heading e "Daily"
 
 ## Feature ideas
-- Shortcut to open the .md file a todo is in in the systems set .md editor
+- Shortcut to open the .md file a todo is in the systems set .md editor
 - Ability to save queries and quickly execute them via shortcut
+- Grouping and OR support for filters
+- Display options, specify what properties of the todo should be displayed
