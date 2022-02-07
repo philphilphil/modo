@@ -16,7 +16,7 @@ fn read_md_file(file: &DirEntry, todos: &mut Vec<Todo>) {
                     file.file_name().to_str().unwrap(),
                     line_no,
                     true,
-                    file.path().to_str().unwrap(),
+                    file.path().to_path_buf(),
                 );
                 todos.push(todo);
             } else if line.starts_with("- [ ]") {
@@ -25,7 +25,7 @@ fn read_md_file(file: &DirEntry, todos: &mut Vec<Todo>) {
                     file.file_name().to_str().unwrap(),
                     line_no,
                     false,
-                    file.path().to_str().unwrap(),
+                    file.path().to_path_buf(),
                 );
                 todos.push(todo);
             }

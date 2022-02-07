@@ -6,10 +6,10 @@ If no filter for "done" is found in the query, "done equals false" will automati
 An empty query will return all open todos.
 
 ### Properties
-Filters always bear upon a todo.
+Filters always bear upon a single todo.
 - name (entire line of the todo)
-- filename
-- path (Full path starting from the given folder)
+- filename (file where the todo is located)
+- path (full path, including filename)
 - heading (First heading (line that starts with #) that is found above the todo)
 - done (if todo is marked as done)
 
@@ -40,3 +40,7 @@ Default display is: Name, filename
 
 ### Examples
 - select name path heading done where heading e "Daily"
+
+## Feature ideas
+- Shortcut to open the .md file a todo is in in the systems set .md editor
+- Ability to save queries and quickly execute them via shortcut
