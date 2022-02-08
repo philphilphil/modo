@@ -1,6 +1,7 @@
 use std::fmt::{Display, Formatter, Result};
 use std::path::PathBuf;
 
+#[derive(Debug)]
 pub struct Todo {
     pub name: String,
     pub filename: String,
@@ -12,14 +13,14 @@ pub struct Todo {
 
 impl Todo {
     // Construct person
-    pub fn new(name: &str, filename: &str, line_no: i32, done: bool, filepath: PathBuf) -> Todo {
+    pub fn new(name: &str, filename: &str, line_no: i32, done: bool, filepath: PathBuf, first_heading: String) -> Todo {
         Todo {
             name: name.to_string(),
             filename: filename.to_string(),
             line_no,
             done,
             filepath,
-            first_heading: String::from("asd"),
+            first_heading,
         }
     }
 }

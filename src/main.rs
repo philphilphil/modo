@@ -26,6 +26,8 @@ fn main() {
             if query == "" {
                 // load all open
                 todos = todos.into_iter().filter(|t| !t.done).collect();
+
+                println!("{:#?}", todos);
             } else {
                 let mut query_parts: Vec<&str> = vec![];
                 query_parts = query.split("and").collect();
@@ -45,7 +47,13 @@ fn main() {
                         "path" => {
                             todos = todos
                                 .into_iter()
-                                .filter(|t| t.filename.to_string().contains(&caps[2]))
+                                .filter(|t| t.filename.to_string().contains(&caps[3]))
+                                .collect()
+                        }
+                        "heading" => {
+                            todos = todos
+                                .into_iter()
+                                .filter(|t| t.first_heading.to_lowercase().contains(&caps[3].to_lowercase()))
                                 .collect()
                         }
                         _ => println!("{}", "Error"),
