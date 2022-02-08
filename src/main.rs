@@ -8,7 +8,7 @@ use todo::Todo;
 
 fn main() {
     loop {
-        println!("\x1B[2J\x1B[1;1H");
+        //println!("\x1B[2J\x1B[1;1H");
         let query: String = Input::new()
             .with_prompt(".. where ")
             .allow_empty(true)
@@ -31,6 +31,7 @@ fn main() {
                 query_parts = query.split("and").collect();
 
                 for q in query_parts {
+                    // https://regex101.com/r/1g3YHS/1
                     let re = Regex::new("(done|path|filename|filepath|heading) (==|<>|<<) (.*)")
                         .unwrap();
 
@@ -55,6 +56,11 @@ fn main() {
                 }
             }
 
+            if todos.len() < 1 {
+                println!("{}", "No todos found.");
+                break;
+            }
+
             let todo_strings: Vec<String> = todos.iter().map(|t| t.to_string()).collect();
             let selection = Select::with_theme(&ColorfulTheme::default())
                 .with_prompt("Choose todo to toggle:")
@@ -64,16 +70,15 @@ fn main() {
                 .interact_opt()
                 .unwrap();
 
-            match selection {
-                Some(selection) => {
-                    let selected_todo = &todos[selection];
-                    println!(
-                        "Marked {} as {}!",
-                        selected_todo.name,
-                        if selected_todo.done { "open" } else { "done" }
-                    );
-                }
-                _ => break,
+            if let Some(selection) = selection {
+                let selected_todo = &todos[selection];
+                println!(
+                    "Marked {} as {}!",
+                    selected_todo.name,
+                    if selected_todo.done { "open" } else { "done" }
+                );
+            } else {
+                break;
             }
 
             md_handler::mark_as_done(&todos[selection.unwrap()]);
