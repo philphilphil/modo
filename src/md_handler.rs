@@ -4,9 +4,9 @@ use std::fs::DirEntry;
 use std::io;
 use std::path::Path;
 
-fn read_md_file(file: &DirEntry, todos: &mut Vec<Todo>) {
+fn read_md_file(file: &DirEntry, todos: &mut Vec<Todo>) -> io::Result<()> {
     if file.file_name().to_str().unwrap().ends_with("md") {
-        let data = fs::read_to_string(file.path()).expect("Unable to read file");
+        let data = fs::read_to_string(file.path())?;
 
         let mut line_no = 0;
         for line in data.lines() {
@@ -35,6 +35,8 @@ fn read_md_file(file: &DirEntry, todos: &mut Vec<Todo>) {
             
         }
     }
+
+    Ok(())
 }
 
 fn get_first_heading(data: &String, todo_line_no: i32) -> String {
@@ -66,15 +68,15 @@ pub fn load_data(dir: &Path, todos: &mut Vec<Todo>) -> io::Result<()> {
             if path.is_dir() {
                 load_data(&path, todos)?;
             } else {
-                read_md_file(&entry, todos);
+                read_md_file(&entry, todos)?;
             }
         }
     }
     Ok(())
 }
 
-pub fn mark_as_done(todo: &Todo) {
-    let data = fs::read_to_string(Path::new(&todo.filepath)).expect("Unable to read file");
+pub fn mark_as_done(todo: &Todo) -> io::Result<()> {
+    let data = fs::read_to_string(Path::new(&todo.filepath))?;
     let mut new_data: String = String::new();
 
     let mut line_no = 1;
@@ -92,5 +94,7 @@ pub fn mark_as_done(todo: &Todo) {
         line_no += 1;
     }
 
-    fs::write(&todo.filepath, new_data).expect("Unable to write file");
+    fs::write(&todo.filepath, new_data)?;
+
+    Ok(())
 }

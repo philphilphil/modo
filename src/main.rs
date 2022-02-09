@@ -21,7 +21,7 @@ fn main() {
         }
         loop {
             let mut todos: Vec<Todo> = vec![];
-            md_handler::load_data(Path::new("/Users/phil/TestingNotes"), &mut todos).unwrap();
+            md_handler::load_data(Path::new("/Users/phil/TestingNotes"), &mut todos).expect("Something went wrong reading the notes");
 
             if query == "" {
                 // load all open
@@ -89,7 +89,7 @@ fn main() {
                 break;
             }
 
-            md_handler::mark_as_done(&todos[selection.unwrap()]);
+            md_handler::mark_as_done(&todos[selection.unwrap()]).expect("Something went wront writing back to the md file.");
         }
     }
 }
