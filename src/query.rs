@@ -4,14 +4,14 @@ use regex::Regex;
 pub struct Query {
     pub input_string: String,
     pub input_clauses: Vec<String>,
-    pub clauses: Option<Vec<Clause>>,
+    pub clauses: Vec<Clause>,
 }
 
 impl Query {
     pub fn new(input_string: &str) -> Query {
         Query {
             input_string: input_string.to_string(),
-            clauses: None,
+            clauses: vec![],
             input_clauses: input_string.split("and").map(|s| s.trim().to_string()).collect(),
         }
     }
@@ -20,8 +20,6 @@ impl Query {
         if self.input_string == "" {
             return true;
         }
-
-        self.clauses = Some(vec![]);
 
         for q in &self.input_clauses {
             // https://regex101.com/r/1g3YHS/1
@@ -32,7 +30,7 @@ impl Query {
             }
             let caps = re.captures(&q).unwrap();
             let clause = Clause::new(&caps[1], &caps[2], &caps[3]);
-            self.clauses.as_mut().unwrap().push(clause);
+            self.clauses.push(clause);
         }
 
         true
