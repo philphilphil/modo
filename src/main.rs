@@ -1,67 +1,38 @@
 mod md_handler;
+mod query;
 mod todo;
 use dialoguer::Input;
 use dialoguer::{theme::ColorfulTheme, Select};
-use regex::Regex;
+use query::Query;
 use std::path::Path;
 use todo::Todo;
 
 fn main() {
     loop {
         //println!("\x1B[2J\x1B[1;1H");
-        let query: String = Input::new()
+        let user_input: String = Input::new()
             .with_prompt(".. where ")
             .allow_empty(true)
             .interact_text()
             .unwrap();
 
-        if !is_valid_query(&query) {
-            //println!("{}", "Invalid query.");
+        let parsed = Query::new(&user_input);
+
+        if !parsed.is_valid_query() {
+            println!("{}", "Invalid query.");
             continue;
         }
         loop {
             let mut todos: Vec<Todo> = vec![];
-            md_handler::load_data(Path::new("/Users/phil/TestingNotes"), &mut todos).expect("Something went wrong reading the notes");
+            md_handler::load_data(Path::new("/Users/phil/TestingNotes"), &mut todos)
+                .expect("Something went wrong reading the notes");
 
-            if query == "" {
+            if user_input == "" {
                 // load all open
                 todos = todos.into_iter().filter(|t| !t.done).collect();
 
                 println!("{:#?}", todos);
             } else {
-                let mut query_parts: Vec<&str> = vec![];
-                query_parts = query.split("and").collect();
-
-                for q in query_parts {
-                    // https://regex101.com/r/1g3YHS/1
-                    let re = Regex::new("(done|path|filename|filepath|heading) (==|<>|<<) (.*)")
-                        .unwrap();
-
-                    if !re.is_match(q) {
-                        panic!("query wrong");
-                    }
-
-                    let caps = re.captures(q).unwrap();
-
-                    match &caps[1] {
-                        "path" => {
-                            todos = todos
-                                .into_iter()
-                                .filter(|t| t.filename.to_string().contains(&caps[3]))
-                                .collect()
-                        }
-                        "heading" => {
-                            todos = todos
-                                .into_iter()
-                                .filter(|t| t.first_heading.to_lowercase().contains(&caps[3].to_lowercase()))
-                                .collect()
-                        }
-                        _ => println!("{}", "Error"),
-                    }
-
-                    println!("{:?}", caps);
-                    //match re.
-                }
             }
 
             if todos.len() < 1 {
@@ -80,6 +51,10 @@ fn main() {
 
             if let Some(selection) = selection {
                 let selected_todo = &todos[selection];
+
+                md_handler::mark_as_done(&todos[selection])
+                    .expect("Something went wront writing back to the md file.");
+
                 println!(
                     "Marked {} as {}!",
                     selected_todo.name,
@@ -88,12 +63,6 @@ fn main() {
             } else {
                 break;
             }
-
-            md_handler::mark_as_done(&todos[selection.unwrap()]).expect("Something went wront writing back to the md file.");
         }
     }
-}
-
-fn is_valid_query(query: &str) -> bool {
-    true
 }
