@@ -24,16 +24,10 @@ fn main() {
         }
 
         println!("{:?}", parsed_query.clauses);
-        break;
+
         let mut todos: Vec<Todo> = vec![];
         md_handler::load_data(Path::new("/Users/phil/TestingNotes"), &mut todos)
             .expect("Something went wrong reading the notes");
-
-        if user_input == "" {
-            // load all open
-            todos = todos.into_iter().filter(|t| !t.done).collect();
-        } else {
-        }
 
         loop {
             if todos.len() < 1 {

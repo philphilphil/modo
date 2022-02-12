@@ -12,12 +12,16 @@ impl Query {
         Query {
             input_string: input_string.to_string(),
             clauses: vec![],
-            input_clauses: input_string.split("and").map(|s| s.trim().to_string()).collect(),
+            input_clauses: input_string
+                .split("and")
+                .map(|s| s.trim().to_string())
+                .collect(),
         }
     }
 
     pub fn parse(&mut self) -> bool {
         if self.input_string == "" {
+            self.clauses.push(Clause::default());
             return true;
         }
 

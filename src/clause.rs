@@ -15,7 +15,7 @@ impl Clause {
             "filename" => clause.property = Property::Path,
             "name" => clause.property = Property::Path,
             "done" => clause.property = Property::Path,
-            _ => panic!("{}", "Something went wrong here."),
+            _ => panic!("{}", "Can't parse property."),
         }
 
         match operator {
@@ -23,10 +23,10 @@ impl Clause {
             "!=" => clause.operator = Operator::DoesNotEqual,
             "<<" => clause.operator = Operator::Contains,
             "<>" => clause.operator = Operator::DoesNotContain,
-            _ => panic!("{}", "Something went wrong here."),
+            _ => panic!("{}", "Can't parse operator."),
         }
 
-        // TODO: check for "" and unwrap content
+        // TODO: check for "" and remove
         clause.value = value.to_string();
 
         clause
@@ -36,8 +36,8 @@ impl Clause {
 impl Default for Clause {
     fn default() -> Clause {
         Clause {
-            operator: Operator::Equals,
             property: Property::Done,
+            operator: Operator::Equals,
             value: String::from("false"),
         }
     }
