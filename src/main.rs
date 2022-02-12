@@ -1,3 +1,4 @@
+mod clause;
 mod md_handler;
 mod query;
 mod todo;
@@ -16,25 +17,25 @@ fn main() {
             .interact_text()
             .unwrap();
 
-        let parsed = Query::new(&user_input);
-
-        if !parsed.is_valid_query() {
+        let mut parsed_query = Query::new(&user_input);
+        if !parsed_query.parse() {
             println!("{}", "Invalid query.");
             continue;
         }
+
+        println!("{:?}", parsed_query.clauses);
+        break;
+        let mut todos: Vec<Todo> = vec![];
+        md_handler::load_data(Path::new("/Users/phil/TestingNotes"), &mut todos)
+            .expect("Something went wrong reading the notes");
+
+        if user_input == "" {
+            // load all open
+            todos = todos.into_iter().filter(|t| !t.done).collect();
+        } else {
+        }
+
         loop {
-            let mut todos: Vec<Todo> = vec![];
-            md_handler::load_data(Path::new("/Users/phil/TestingNotes"), &mut todos)
-                .expect("Something went wrong reading the notes");
-
-            if user_input == "" {
-                // load all open
-                todos = todos.into_iter().filter(|t| !t.done).collect();
-
-                println!("{:#?}", todos);
-            } else {
-            }
-
             if todos.len() < 1 {
                 println!("{}", "No todos found.");
                 break;

@@ -44,6 +44,7 @@ Filters always bear upon a single todo.
 
 ## Feature ideas
 - Ordering todos via query 
+- Give feedback about query parts that are wrong
 - Shortcut to open the .md file a todo is in the systems set .md editor
 - Ability to save queries and quickly execute them via shortcut
 - Grouping and OR support for filters
