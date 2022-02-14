@@ -17,13 +17,13 @@ fn main() {
             .interact_text()
             .unwrap();
 
-        let mut parsed_query = Query::new(&user_input);
-        if !parsed_query.parse() {
+        let mut query = Query::new(&user_input);
+        if !query.parse() {
             println!("{}", "Invalid query.");
             continue;
         }
 
-        println!("{:?}", parsed_query.clauses);
+        println!("{:?}", query.clauses);
 
         let mut todos: Vec<Todo> = vec![];
         md_handler::load_data(Path::new("/Users/phil/TestingNotes"), &mut todos)

@@ -40,3 +40,22 @@ impl Query {
         true
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_query_1() {
+        let query = String::from("done /// false");
+        let mut parsed_query = Query::new(&query);
+        assert!(!parsed_query.parse());
+    }
+
+    #[test]
+    fn parse_query_2() {
+        let query = String::from("done == false");
+        let mut parsed_query = Query::new(&query);
+        assert!(parsed_query.parse());
+    }
+}
