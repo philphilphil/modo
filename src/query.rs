@@ -1,5 +1,6 @@
 use crate::clause::Clause;
 use regex::Regex;
+
 #[derive(Debug)]
 pub struct Query {
     pub input_string: String,
@@ -27,6 +28,7 @@ impl Query {
 
         for q in &self.input_clauses {
             // https://regex101.com/r/1g3YHS/1
+            // Todo: split regex, done can only have == true/false
             let re = Regex::new("(done|path|filename|heading|name) (==|<>|<<) (.*)").unwrap();
 
             if !re.is_match(&q) {
