@@ -11,11 +11,13 @@ fn read_md_file(file: &DirEntry, todos: &mut Vec<Todo>) -> io::Result<()> {
         let mut line_no = 0;
         for line in data.lines() {
             line_no += 1;
-            if !line.starts_with("- [x]") && !line.starts_with("- [ ]") {
+            let line_trimed = line.trim_start();
+
+            if !line_trimed.starts_with("- [x]") && !line_trimed.starts_with("- [ ]") {
                 continue;
             }
 
-            let done = if line.starts_with("- [x]") {
+            let done = if line_trimed.starts_with("- [x]") {
                 true
             } else {
                 false
@@ -23,7 +25,7 @@ fn read_md_file(file: &DirEntry, todos: &mut Vec<Todo>) -> io::Result<()> {
 
             let first_heading = get_first_heading(&data, line_no);
             let todo = Todo::new(
-                &line[6..line.len()],
+                &line_trimed[6..line_trimed.len()],
                 file.file_name().to_str().unwrap(),
                 line_no,
                 done,
@@ -32,7 +34,6 @@ fn read_md_file(file: &DirEntry, todos: &mut Vec<Todo>) -> io::Result<()> {
             );
 
             todos.push(todo);
-            
         }
     }
 
@@ -44,13 +45,12 @@ fn get_first_heading(data: &String, todo_line_no: i32) -> String {
     let mut line_no = 1;
     let mut heading = String::from("");
     for line in data.lines() {
-
         if line_no == todo_line_no {
             break;
         }
 
-        if line.starts_with("#") {
-            heading = line.to_string();
+        if line.trim_start().starts_with("#") {
+            heading = line.trim_start().to_string();
         }
 
         line_no += 1;
