@@ -42,25 +42,25 @@ fn test_single_file_with_headers() {
     let mut todos: Vec<Todo> = vec![];
     md_handler::load_data(temp_folder.path(), &mut todos).unwrap();
     assert_eq!(todos.len(), 5);
-    assert_eq!(todos[0].first_heading, "# Heading2");
+    assert_eq!(todos[0].heading, "# Heading2");
     assert_eq!(todos[0].done, false);
     assert_eq!(todos[0].name, "Todo with Heading");
     assert_eq!(todos[0].filename, "file1.md");
     assert_eq!(todos[0].line_no, 3);
 
-    assert_eq!(todos[1].first_heading, "# Heading2");
+    assert_eq!(todos[1].heading, "# Heading2");
     assert_eq!(todos[1].done, false);
     assert_eq!(todos[1].name, "A open todo!");
     assert_eq!(todos[1].filename, "file1.md");
     assert_eq!(todos[1].line_no, 4);
 
-    assert_eq!(todos[2].first_heading, "### Heading Done");
+    assert_eq!(todos[2].heading, "### Heading Done");
     assert_eq!(todos[2].done, true);
     assert_eq!(todos[2].name, "A done todo!");
     assert_eq!(todos[2].filename, "file1.md");
     assert_eq!(todos[2].line_no, 7);
 
-    assert_eq!(todos[3].first_heading, "### Heading Done");
+    assert_eq!(todos[3].heading, "### Heading Done");
     assert_eq!(todos[3].done, true);
     assert_eq!(todos[3].name, "A done todo!");
     assert_eq!(todos[3].filename, "file1.md");

@@ -8,19 +8,19 @@ pub struct Todo {
     pub line_no: i32,
     pub done: bool,
     pub filepath: PathBuf,
-    pub first_heading: String,
+    pub heading: String,
 }
 
 impl Todo {
     // Construct person
-    pub fn new(name: &str, filename: &str, line_no: i32, done: bool, filepath: PathBuf, first_heading: String) -> Todo {
+    pub fn new(name: &str, filename: &str, line_no: i32, done: bool, filepath: PathBuf, heading: String) -> Todo {
         Todo {
             name: name.to_string(),
             filename: filename.to_string(),
             line_no,
             done,
             filepath,
-            first_heading,
+            heading,
         }
     }
 }
