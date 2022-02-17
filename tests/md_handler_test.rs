@@ -1,9 +1,9 @@
 mod common;
-use modo::{todo::Todo, md_handler};
+use modo::{md_handler, todo::Todo};
 
 #[test]
 fn test_single_file() {
-    let temp_folder = common::create_md_test_files_1().unwrap();
+    let temp_folder = common::create_md_test_file_with_1_open_todo(1).unwrap();
     let mut todos: Vec<Todo> = vec![];
     md_handler::load_data(temp_folder.path(), &mut todos).unwrap();
     assert_eq!(todos.len(), 1);
@@ -14,7 +14,7 @@ fn test_single_file() {
 
 #[test]
 fn test_three_files() {
-    let temp_folder = common::create_md_test_files_2().unwrap();
+    let temp_folder = common::create_md_test_file_with_1_open_todo(3).unwrap();
     let mut todos: Vec<Todo> = vec![];
     md_handler::load_data(temp_folder.path(), &mut todos).unwrap();
     assert_eq!(todos.len(), 3);
@@ -25,7 +25,7 @@ fn test_three_files() {
 
 #[test]
 fn test_single_files_multiple_todos() {
-    let temp_folder = common::create_md_test_files_3().unwrap();
+    let temp_folder = common::create_md_test_file_with_5_todos_4_open(1).unwrap();
     let mut todos: Vec<Todo> = vec![];
     md_handler::load_data(temp_folder.path(), &mut todos).unwrap();
     assert_eq!(todos.len(), 5);
@@ -37,7 +37,7 @@ fn test_single_files_multiple_todos() {
 
 #[test]
 fn test_multiple_files_multiple_todos() {
-    let temp_folder = common::create_md_test_files_4().unwrap();
+    let temp_folder = common::create_md_test_file_with_5_todos_4_open(2).unwrap();
     let mut todos: Vec<Todo> = vec![];
     md_handler::load_data(temp_folder.path(), &mut todos).unwrap();
     assert_eq!(todos.len(), 10);
@@ -49,5 +49,20 @@ fn test_multiple_files_multiple_todos() {
     temp_folder.close().unwrap();
 }
 
-// TODO: Test multiple_files_multiple_folders
+#[test]
+fn test_multiple_files_and_folders_multiple_todos() {
+    let temp_folder = common::create_folder_with_2_files_10_todos_8_open().unwrap();
+    let temp_folder_depth1 =
+        common::create_folder_with_2_files_10_todos_8_open_in(&temp_folder).unwrap();
+    let _temp_folder_depth1_2 =
+        common::create_folder_with_2_files_10_todos_8_open_in(&temp_folder).unwrap();
+    let _temp_folder_depth2 =
+        common::create_folder_with_2_files_10_todos_8_open_in(&temp_folder_depth1).unwrap();
+
+    let mut todos: Vec<Todo> = vec![];
+    md_handler::load_data(temp_folder.path(), &mut todos).unwrap();
+    assert_eq!(todos.len(), 40);
+    temp_folder.close().unwrap(); //deletes other temp folders with it
+}
+
 // TODO: test multiple_files_multiple_folders2, very deep
