@@ -48,4 +48,12 @@ mod md_test_file_creator {
         f.sync_all()?;
         Ok(())
     }
+
+    pub fn one_complex_file_with_10_todos_5_open(dir: &TempDir, filename: &str) -> io::Result<()> {
+        let file_path = dir.path().join(filename);
+        let mut f = File::create(file_path)?;
+        f.write_all(b"- [ ] A open todo!\r\n- [ ] A open todo!\r\n- [x] A closed todo!\r\n- [ ] A open todo!\r\n- [ ] A open todo!\r\n")?;
+        f.sync_all()?;
+        Ok(())
+    }
 }

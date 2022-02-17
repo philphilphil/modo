@@ -1,5 +1,4 @@
 mod common;
-use std::path::Path;
 use modo::todo::Todo;
 use modo::md_handler;
 
@@ -43,8 +42,13 @@ fn test_multiple_files_multiple_todos() {
     let mut todos: Vec<Todo> = vec![];
     md_handler::load_data(temp_folder.path(), &mut todos).unwrap();
     assert_eq!(todos.len(), 11);
+    //assert eq mit map/clojure
+
     assert_eq!(todos[0].name, "A open todo!");
     assert_eq!(todos[1].done, false);
     assert_eq!(todos[2].done, true);
     temp_folder.close().unwrap();
 }
+
+// TODO: Test multiple_files_multiple_folders
+// TODO: test multiple_files_multiple_folders2, very deep
