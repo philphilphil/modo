@@ -1,6 +1,5 @@
 mod common;
-use modo::todo::Todo;
-use modo::md_handler;
+use modo::{todo::Todo, md_handler};
 
 #[test]
 fn test_single_file() {
