@@ -41,7 +41,7 @@ fn test_multiple_files_multiple_todos() {
     let temp_folder = common::create_md_test_files_4().unwrap();
     let mut todos: Vec<Todo> = vec![];
     md_handler::load_data(temp_folder.path(), &mut todos).unwrap();
-    assert_eq!(todos.len(), 11);
+    assert_eq!(todos.len(), 10);
     //assert eq mit map/clojure
 
     assert_eq!(todos[0].name, "A open todo!");

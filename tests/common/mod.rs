@@ -25,7 +25,6 @@ pub fn create_md_test_files_4() -> io::Result<TempDir> {
     let dir = TempDir::new("modo_integrationtests")?;
     md_test_file_creator::one_file_five_todos_4_open(&dir, "file1.md")?;
     md_test_file_creator::one_file_five_todos_4_open(&dir, "file2.md")?;
-    md_test_file_creator::one_file_one_open_todo(&dir, "file3.md")?;
     Ok(dir)
 }
 
@@ -49,7 +48,7 @@ mod md_test_file_creator {
         Ok(())
     }
 
-    pub fn one_complex_file_with_10_todos_5_open(dir: &TempDir, filename: &str) -> io::Result<()> {
+    pub fn three_complex_files_with_10_todos_5_open(dir: &TempDir, filename: &str) -> io::Result<()> {
         let file_path = dir.path().join(filename);
         let mut f = File::create(file_path)?;
         f.write_all(b"- [ ] A open todo!\r\n- [ ] A open todo!\r\n- [x] A closed todo!\r\n- [ ] A open todo!\r\n- [ ] A open todo!\r\n")?;
