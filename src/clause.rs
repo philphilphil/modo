@@ -11,10 +11,10 @@ impl Clause {
 
         match property {
             "path" => clause.property = Property::Path,
-            "heading" => clause.property = Property::Path,
-            "filename" => clause.property = Property::Path,
-            "name" => clause.property = Property::Path,
-            "done" => clause.property = Property::Path,
+            "heading" => clause.property = Property::Heading,
+            "filename" => clause.property = Property::FileName,
+            "name" => clause.property = Property::Name,
+            "done" => clause.property = Property::Done,
             _ => panic!("{}", "Can't parse property."),
         }
 
