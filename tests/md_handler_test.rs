@@ -41,6 +41,19 @@ fn test_three_files() {
 }
 
 #[test]
+fn test_multiple_file_types() {
+    let dir = TempDir::new("modo_integrationtests").unwrap();
+    md_test_file_creator::simple_1_open_todo(&dir, "file0.md").unwrap();
+    md_test_file_creator::simple_1_open_todo(&dir, "file1.txt").unwrap();
+    md_test_file_creator::simple_1_open_todo(&dir, "file2.mad").unwrap();
+    md_test_file_creator::simple_1_open_todo(&dir, "file3.md").unwrap();
+    let mut todos: Vec<Todo> = vec![];
+    md_handler::load_data(dir.path(), &mut todos).unwrap();
+    assert_eq!(todos.len(), 2);
+    dir.close().unwrap();
+}
+
+#[test]
 fn test_single_files_multiple_todos() {
     let dir = TempDir::new("modo_integrationtests").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file_123_323.md").unwrap();
