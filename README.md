@@ -15,7 +15,7 @@ If no filter for "done" is found in the query, "done equals false" will automati
 An empty query will return all open todos. All filters are case insentivite.
 Multiple filters can be used with "and" between them.
 
-Syntax has to be: <todo-property> <operator> <value>
+Syntax has to be: \<todo-property\> \<operator\> \<value\>
 
 ### Properties
 Filters always bear upon a single todo.
@@ -38,9 +38,6 @@ Filters always bear upon a single todo.
 - done == false and heading == "Daily"
 - heading == "Daily" (same result as query overhead)
 - path << "Work" and path <> "customer"
-
-### Examples
-- select name path heading done where heading e "Daily"
 
 ## Feature ideas
 - Ordering todos via query 
