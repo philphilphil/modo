@@ -27,7 +27,7 @@ impl Clause {
         }
 
         // TODO: check for "" and remove
-        clause.value = value.to_string();
+        clause.value = value.to_lowercase();
 
         clause
     }

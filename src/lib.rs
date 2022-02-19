@@ -22,18 +22,21 @@ pub fn modo() {
         return;
     }
 
-    //println!("{:?}", query.clauses);
+    //println!("DEBUG: {:#?}", query.clauses);
     loop {
         let mut todos: Vec<Todo> = vec![];
         md_handler::load_data(Path::new("/Users/phil/TestingNotes"), &mut todos)
             .expect("Something went wrong reading the notes");
 
+        //println!("DEBUG: {:#?}", todos);
+        //println!("DEBUG: Todo count: {}", todos.len());
+        filter::filter(&query, &mut todos);
+        //println!("DEBUG: Todo count after filter: {}", todos.len());
+
         if todos.len() < 1 {
             println!("{}", "No todos found.");
             break;
         }
-
-        filter::filter(&query, &mut todos);
 
         let todo_strings: Vec<String> = todos.iter().map(|t| t.to_string()).collect();
         let selection = Select::with_theme(&ColorfulTheme::default())

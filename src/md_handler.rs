@@ -30,7 +30,7 @@ fn read_md_file(file: &DirEntry, todos: &mut Vec<Todo>) -> io::Result<()> {
                 line_no,
                 done,
                 file.path().to_path_buf(),
-                first_heading,
+                first_heading.to_lowercase(),
             );
 
             todos.push(todo);
