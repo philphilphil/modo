@@ -6,7 +6,6 @@ use tempdir::TempDir;
 #[test]
 fn test_querys_1() {
     let mut todos: Vec<Todo> = vec![];
-    let mut todos: Vec<Todo> = vec![];
     let dir = TempDir::new("modo_integrationtests").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file2.md").unwrap();
@@ -98,11 +97,11 @@ fn test_querys_2() {
     assert_eq!(todos3.len(), 24, "{}", query_string);
 
     let mut todos4 = todos.clone();
-    let query_string = String::from("name == todo and heading != work and filepath !< 1");
+    let query_string = String::from("name == todo and heading != work and filepath !< file1");
     let mut query = Query::new(&query_string);
     assert_eq!(query.parse(), true);
     filter::filter(&query, &mut todos4);
-    assert_eq!(todos4.len(), 3, "{}", query_string);
+    assert_eq!(todos4.len(), 6, "{}", query_string);
 
     dir.close().unwrap();
 }
