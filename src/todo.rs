@@ -1,9 +1,10 @@
 use std::fmt::{Display, Formatter, Result};
 use std::path::PathBuf;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Todo {
     pub name: String,
+    pub filter_name: String,
     pub filename: String,
     pub line_no: i32,
     pub done: bool,
@@ -24,6 +25,7 @@ impl Todo {
     ) -> Todo {
         Todo {
             name: name.to_string(),
+            filter_name: name.to_lowercase(),
             filename: filename.to_string(),
             line_no,
             done,
