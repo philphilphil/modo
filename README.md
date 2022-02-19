@@ -11,7 +11,6 @@ Navigation in todo list is done via arrow keys. Pressing enter or space in a tod
 Pressing ESC gets you back to the query prompt.
 
 ## Filter Queries
-If no filter for "done" is found in the query, "done equals false" will automatically be added.
 An empty query will return all open todos. All filters are case insentivite.
 Multiple filters can be used with "and" between them.
 
