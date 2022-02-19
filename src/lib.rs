@@ -1,11 +1,12 @@
 mod clause;
+pub mod filter;
 pub mod md_handler;
 pub mod query;
 pub mod todo;
-use crate::todo::Todo;
 use dialoguer::{theme::ColorfulTheme, Input, Select};
 use query::Query;
 use std::path::Path;
+use todo::Todo;
 
 pub fn modo() {
     //println!("\x1B[2J\x1B[1;1H");
@@ -31,6 +32,8 @@ pub fn modo() {
             println!("{}", "No todos found.");
             break;
         }
+
+        filter::filter(&query, &mut todos);
 
         let todo_strings: Vec<String> = todos.iter().map(|t| t.to_string()).collect();
         let selection = Select::with_theme(&ColorfulTheme::default())
