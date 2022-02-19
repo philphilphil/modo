@@ -24,15 +24,15 @@ pub fn filter(query: &Query, todos: &mut Vec<Todo>) {
                 Operator::DoesNotEqual => todos.retain(|t| t.filename != clause.expr_string),
             },
             Property::Name => match clause.operator {
-                Operator::Contains => todos.retain(|t| t.name.contains(&clause.expr_string)),
-                Operator::DoesNotContain => todos.retain(|t| !t.name.contains(&clause.expr_string)),
-                Operator::Equals => todos.retain(|t| t.name == clause.expr_string),
-                Operator::DoesNotEqual => todos.retain(|t| t.name != clause.expr_string),
+                Operator::Contains => todos.retain(|t| t.filter_name.contains(&clause.expr_string)),
+                Operator::DoesNotContain => todos.retain(|t| !t.filter_name.contains(&clause.expr_string)),
+                Operator::Equals => todos.retain(|t| t.filter_name == clause.expr_string),
+                Operator::DoesNotEqual => todos.retain(|t| t.filter_name != clause.expr_string),
             },
             Property::Done => match clause.operator {
                 Operator::Equals => todos.retain(|t| t.done == clause.expr_bool),
                 Operator::DoesNotEqual => todos.retain(|t| t.done != clause.expr_bool),
-                _ => panic!("Cant use contains on a bool!")
+                _ => {}
             },
         }
     }
