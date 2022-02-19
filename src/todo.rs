@@ -27,7 +27,7 @@ impl Todo {
             filename: filename.to_string(),
             line_no,
             done,
-            filepath_as_string: filepath.to_str().unwrap().to_string(),
+            filepath_as_string: filepath.to_str().unwrap().to_string().to_lowercase(),
             filepath,
             heading,
         }

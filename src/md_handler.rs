@@ -26,7 +26,7 @@ fn read_md_file(file: &DirEntry, todos: &mut Vec<Todo>) -> io::Result<()> {
             let first_heading = get_first_heading(&data, line_no);
             let todo = Todo::new(
                 &line_trimed[6..line_trimed.len()],
-                file.file_name().to_str().unwrap(),
+                &file.file_name().to_str().unwrap().to_lowercase(),
                 line_no,
                 done,
                 file.path().to_path_buf(),
