@@ -75,7 +75,7 @@ pub fn load_data(dir: &Path, todos: &mut Vec<Todo>) -> io::Result<()> {
     Ok(())
 }
 
-pub fn mark_as_done(todo: &Todo) -> io::Result<()> {
+pub fn toggle_todo(todo: &Todo) -> io::Result<()> {
     let data = fs::read_to_string(Path::new(&todo.filepath))?;
     let mut new_data: String = String::new();
 

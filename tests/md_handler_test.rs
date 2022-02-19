@@ -27,7 +27,7 @@ fn test_tick_single_file() {
     md_handler::load_data(dir.path(), &mut todos).unwrap();
     assert_eq!(todos[0].done, false);
 
-    md_handler::mark_as_done(&todos[0]);
+    md_handler::toggle_todo(&todos[0]).unwrap();
     todos = vec![];
     md_handler::load_data(dir.path(), &mut todos).unwrap();
     assert_eq!(todos[0].done, true);
@@ -64,7 +64,7 @@ fn test_parse_three_files() {
 }
 
 #[test]
-fn test_parse_and_tick_multiple_file_types() {
+fn test_parse_multiple_file_types() {
     let mut todos: Vec<Todo> = vec![];
     let dir = TempDir::new("modo_integrationtests").unwrap();
     md_test_file_creator::simple_1_open_todo(&dir, "file0.md").unwrap();
@@ -73,7 +73,7 @@ fn test_parse_and_tick_multiple_file_types() {
     md_test_file_creator::simple_1_open_todo(&dir, "file3.md").unwrap();
 
     md_handler::load_data(dir.path(), &mut todos).unwrap();
-    assert_eq!(todos.len(), 2);
+    assert_eq!(todos.len(), 2); // only md files are read
 
     dir.close().unwrap();
 }
@@ -129,7 +129,7 @@ fn test_parse_single_file_with_headers() {
 }
 
 #[test]
-fn test_parse_multiple_files_multiple_todos() {
+fn test_parse_and_tick_multiple_files_multiple_todos() {
     let mut todos: Vec<Todo> = vec![];
     let dir = TempDir::new("modo_integrationtests").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file_123_323.md").unwrap();
@@ -141,6 +141,13 @@ fn test_parse_multiple_files_multiple_todos() {
     assert_eq!(todos[0].name, "A open todo!");
     assert_eq!(todos[1].done, false);
     assert_eq!(todos[2].done, true);
+
+    md_handler::toggle_todo(&todos[1]).unwrap();
+    md_handler::toggle_todo(&todos[2]).unwrap();
+    todos = vec![];
+    md_handler::load_data(dir.path(), &mut todos).unwrap();
+    assert_eq!(todos[1].done, true);
+    assert_eq!(todos[2].done, false);
 
     dir.close().unwrap();
 }

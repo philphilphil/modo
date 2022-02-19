@@ -44,7 +44,7 @@ pub fn modo() {
         if let Some(selection) = selection {
             let selected_todo = &todos[selection];
 
-            md_handler::mark_as_done(&todos[selection])
+            md_handler::toggle_todo(&todos[selection])
                 .expect("Something went wront writing back to the md file.");
 
             println!(
