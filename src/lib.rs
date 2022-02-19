@@ -1,4 +1,4 @@
-mod clause;
+mod predicate;
 pub mod filter;
 pub mod md_handler;
 pub mod query;
@@ -28,7 +28,7 @@ pub fn modo() {
         md_handler::load_data(Path::new("/Users/phil/TestingNotes"), &mut todos)
             .expect("Something went wrong reading the notes");
 
-        //println!("DEBUG: {:#?}", todos);
+        println!("DEBUG: {:#?}", todos);
         //println!("DEBUG: Todo count: {}", todos.len());
         filter::filter(&query, &mut todos);
         //println!("DEBUG: Todo count after filter: {}", todos.len());

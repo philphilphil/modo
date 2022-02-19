@@ -29,15 +29,15 @@ Filters always bear upon a single todo.
 - == equals
 - != does not equal
 - << contains 
-- <> does not contain
+- !< does not contain
 
 ### Examples
 - done == false (same as no query)
 - path << customername and done == true
-- done == true and path <> "Arbeit"
+- done == true and path !< "Arbeit"
 - done == false and heading == "Daily"
 - heading == "Daily" (same result as query overhead)
-- path << "Work" and path <> "customer"
+- path << "Work" and path !< "customer"
 
 ## Feature ideas
 - Ordering todos via query 
