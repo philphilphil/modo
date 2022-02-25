@@ -57,7 +57,7 @@ fn test_parse_three_files() {
 
     md_handler::load_data(dir.path(), &mut todos).unwrap();
     assert_eq!(todos.len(), 3);
-    let open_todos_count = todos.iter().filter(|t| t.done == false).count();
+    let open_todos_count = todos.iter().filter(|t| !t.done).count();
     assert_eq!(open_todos_count, 3);
     assert_eq!(todos[0].name, "A single open todo!");
     assert_eq!(todos[2].done, false);
@@ -75,7 +75,7 @@ fn test_parse_multiple_file_types() {
     md_test_file_creator::simple_1_open_todo(&dir, "file3.md").unwrap();
 
     md_handler::load_data(dir.path(), &mut todos).unwrap();
-    let closed_todos_count = todos.iter().filter(|t| t.done == true).count();
+    let closed_todos_count = todos.iter().filter(|t| t.done).count();
     assert_eq!(closed_todos_count, 0);
     assert_eq!(todos.len(), 2); // only md files are read
 
@@ -146,7 +146,7 @@ fn test_parse_and_tick_multiple_files_multiple_todos() {
     assert_eq!(todos[1].done, false);
     assert_eq!(todos[2].done, true);
 
-    let mut open_todos_count = todos.iter().filter(|t| t.done == false).count();
+    let mut open_todos_count = todos.iter().filter(|t| !t.done).count();
     assert_eq!(open_todos_count, 8);
 
     md_handler::toggle_todo(&todos[1]).unwrap();
@@ -155,7 +155,7 @@ fn test_parse_and_tick_multiple_files_multiple_todos() {
     md_handler::load_data(dir.path(), &mut todos).unwrap();
     assert_eq!(todos[1].done, true);
     assert_eq!(todos[2].done, false);
-    open_todos_count = todos.iter().filter(|t| t.done == false).count();
+    open_todos_count = todos.iter().filter(|t| !t.done).count();
     assert_eq!(open_todos_count, 8); // should not change because changed one done one open
 
     dir.close().unwrap();
@@ -179,7 +179,7 @@ fn test_parse_multiple_files_and_folders_multiple_todos() {
 
     md_handler::load_data(dir.path(), &mut todos).unwrap();
     assert_eq!(todos.len(), 40);
-    let open_todos_count = todos.iter().filter(|t| t.done == false).count();
+    let open_todos_count = todos.iter().filter(|t| !t.done).count();
     assert_eq!(open_todos_count, 32);
 
     dir.close().unwrap();
@@ -210,8 +210,8 @@ fn test_parse_multiple_complex_files_and_folders_multiple_todos() {
 
     md_handler::load_data(dir.path(), &mut todos).unwrap();
     assert_eq!(todos.len(), 122);
-    let open_todos_count = todos.iter().filter(|t| t.done == false).count();
-    let closed_todos_count = todos.iter().filter(|t| t.done == true).count();
+    let open_todos_count = todos.iter().filter(|t| !t.done).count();
+    let closed_todos_count = todos.iter().filter(|t| t.done).count();
     assert_eq!(open_todos_count, 84);
     assert_eq!(closed_todos_count, 38);
 
