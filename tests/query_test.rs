@@ -87,7 +87,7 @@ fn test_querys_2() {
     let mut query = Query::new(&query_string);
     assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos2);
-    assert_eq!(todos2.len(), 84, "{}", query_string);
+    assert_eq!(todos2.len(), 122, "{}", query_string);
 
     let mut todos3 = todos.clone();
     let query_string = String::from("name << todo and heading << work");
