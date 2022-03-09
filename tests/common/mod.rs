@@ -3,21 +3,22 @@ pub mod md_test_file_creator {
     use std::io;
     use tempdir::TempDir;
 
+    #[allow(dead_code)] // code only used in tests, shows up as warning
     pub fn simple_1_open_todo(dir: &TempDir, filename: &str) -> io::Result<()> {
         let file_path = dir.path().join(filename);
         fs::write(file_path, "- [ ] A single open todo!")?;
         Ok(())
     }
+
+    #[allow(dead_code)]
     pub fn simple_5_todos_4_open(dir: &TempDir, filename: &str) -> io::Result<()> {
         let file_path = dir.path().join(filename);
         fs::write(file_path, "- [ ] A open todo!\r\n- [ ] A open todo!\r\n- [x] A closed todo!\r\n- [ ] A open todo!\r\n- [ ] A open todo!\r\n")?;
         Ok(())
     }
 
-    pub fn simple_5_todos_3_open_with_headings(
-        dir: &TempDir,
-        filename: &str,
-    ) -> io::Result<()> {
+    #[allow(dead_code)]
+    pub fn simple_5_todos_3_open_with_headings(dir: &TempDir, filename: &str) -> io::Result<()> {
         let file_path = dir.path().join(filename);
         let md = "## Heading
                 # Heading2
@@ -37,6 +38,7 @@ pub mod md_test_file_creator {
         Ok(())
     }
 
+    #[allow(dead_code)]
     pub fn complex_23_todos_15_open(dir: &TempDir, filename: &str) -> io::Result<()> {
         let file_path = dir.path().join(filename);
         let md = "# Complex note with 23 todos, 15 open

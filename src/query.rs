@@ -24,7 +24,6 @@ impl Query {
 
     pub fn parse(&mut self) -> Result<()> {
         if self.input_string == "" {
-            self.predicates.push(Predicate::default());
             return Ok(());
         }
 

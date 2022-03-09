@@ -3,20 +3,13 @@ pub mod md_handler;
 mod predicate;
 pub mod query;
 pub mod todo;
-use dialoguer::{theme::ColorfulTheme, Input, Select};
+use dialoguer::{theme::ColorfulTheme, Select};
 use query::Query;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use todo::Todo;
 
-pub fn modo() {
-    //println!("\x1B[2J\x1B[1;1H");
-    let user_input: String = Input::new()
-        .with_prompt(".. where ")
-        .allow_empty(true)
-        .interact_text()
-        .unwrap();
-
-    let mut query = Query::new(&user_input);
+pub fn modo(path: PathBuf, query: String) {
+    let mut query = Query::new(&query);
     if query.parse().is_err() {
         println!("{}", "Invalid query.");
         return;
@@ -25,7 +18,7 @@ pub fn modo() {
     // println!("DEBUG: {:#?}", query.predicates);
     loop {
         let mut todos: Vec<Todo> = vec![];
-        md_handler::load_data(Path::new("/Users/phil/TestingNotes"), &mut todos)
+        md_handler::load_data(Path::new(&path), &mut todos)
             .expect("Something went wrong reading the notes");
 
         //println!("DEBUG: {:#?}", todos);
