@@ -14,7 +14,7 @@ fn test_filter_done() {
     let mut todos2 = todos.clone();
     let query_string = String::from("done == true");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos2);
     assert_eq!(todos2.len(), 2);
 
@@ -22,7 +22,7 @@ fn test_filter_done() {
     let mut todos3 = todos.clone();
     let query_string = String::from("done == false");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos3);
     assert_eq!(todos3.len(), 3);
 
@@ -40,7 +40,7 @@ fn test_filter_name() {
     let mut todos2 = todos.clone();
     let query_string = String::from("name << open");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos2);
     assert_eq!(todos2.len(), 2, "op: contains");
 
@@ -48,7 +48,7 @@ fn test_filter_name() {
     let mut todos3 = todos.clone();
     let query_string = String::from("name !< open");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos3);
     assert_eq!(todos3.len(), 3, "op: does not contain");
 
@@ -56,7 +56,7 @@ fn test_filter_name() {
     let mut todos4 = todos.clone();
     let query_string = String::from("name == todo with hEaDiNg");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos4);
     assert_eq!(todos4.len(), 1, "op: equals");
 
@@ -64,7 +64,7 @@ fn test_filter_name() {
     let mut todos5 = todos.clone();
     let query_string = String::from("name != todo with hEaDiNg");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos5);
     assert_eq!(todos5.len(), 4, "op: does not equal");
 
@@ -82,7 +82,7 @@ fn test_filter_heading() {
     let mut todos2 = todos.clone();
     let query_string = String::from("heading << heading");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos2);
     assert_eq!(todos2.len(), 5, "op: contains");
 
@@ -90,7 +90,7 @@ fn test_filter_heading() {
     let mut todos3 = todos.clone();
     let query_string = String::from("heading !< 2");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos3);
     assert_eq!(todos3.len(), 3, "op: does not contain");
 
@@ -98,7 +98,7 @@ fn test_filter_heading() {
     let mut todos4 = todos.clone();
     let query_string = String::from("heading == ### Heading DONE");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos4);
     assert_eq!(todos4.len(), 3, "op: equals");
 
@@ -106,7 +106,7 @@ fn test_filter_heading() {
     let mut todos5 = todos.clone();
     let query_string = String::from("heading != abc");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos5);
     assert_eq!(todos5.len(), 5, "op: does not equal");
 
@@ -127,7 +127,7 @@ fn test_filter_filename() {
     let mut todos2 = todos.clone();
     let query_string = String::from("filename << file");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos2);
     assert_eq!(todos2.len(), 20, "op: contains");
 
@@ -135,7 +135,7 @@ fn test_filter_filename() {
     let mut todos3 = todos.clone();
     let query_string = String::from("filename !< 2");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos3);
     assert_eq!(todos3.len(), 15, "op: does not contain");
 
@@ -143,7 +143,7 @@ fn test_filter_filename() {
     let mut todos4 = todos.clone();
     let query_string = String::from("filename == file0.md");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos4);
     assert_eq!(todos4.len(), 5, "op: equals");
 
@@ -151,7 +151,7 @@ fn test_filter_filename() {
     let mut todos5 = todos.clone();
     let query_string = String::from("filename != file1.md");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos5);
     assert_eq!(todos5.len(), 15, "op: does not equal");
 
@@ -172,7 +172,7 @@ fn test_filter_path() {
     let mut todos2 = todos.clone();
     let query_string = String::from("path << /file");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos2);
     assert_eq!(todos2.len(), 20, "op: contains");
 
@@ -180,7 +180,7 @@ fn test_filter_path() {
     let mut todos3 = todos.clone();
     let query_string = String::from("path !< /file2");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos3);
     assert_eq!(todos3.len(), 15, "op: does not contain");
 
@@ -188,7 +188,7 @@ fn test_filter_path() {
     let mut todos4 = todos.clone();
     let query_string = String::from("path == file0.md");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos4);
     assert_eq!(todos4.len(), 0, "op: equals");
 
@@ -196,7 +196,7 @@ fn test_filter_path() {
     let mut todos5 = todos.clone();
     let query_string = String::from("path != /file1.md");
     let mut query = Query::new(&query_string);
-    assert_eq!(query.parse(), true);
+    assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos5);
     assert_eq!(todos5.len(), 20, "op: does not equal");
 

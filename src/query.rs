@@ -1,4 +1,6 @@
 use crate::predicate::Predicate;
+use anyhow::anyhow;
+use anyhow::Result;
 use regex::Regex;
 
 #[derive(Debug)]
@@ -20,10 +22,10 @@ impl Query {
         }
     }
 
-    pub fn parse(&mut self) -> bool {
+    pub fn parse(&mut self) -> Result<()> {
         if self.input_string == "" {
             self.predicates.push(Predicate::default());
-            return true;
+            return Ok(());
         }
 
         for q in &self.input_predicates {
@@ -32,14 +34,14 @@ impl Query {
             let re = Regex::new("(done|path|filename|heading|name) (==|!=|<<|!<) (.*)").unwrap();
 
             if !re.is_match(&q) {
-                return false;
+                return Err(anyhow!("Could not parse query."));
             }
             let caps = re.captures(&q).unwrap();
             let clause = Predicate::new(&caps[1], &caps[2], &caps[3]);
             self.predicates.push(clause);
         }
 
-        true
+        Ok(())
     }
 }
 
@@ -51,13 +53,13 @@ mod tests {
     fn parse_query_failure() {
         let query = String::from("done /// false");
         let mut parsed_query = Query::new(&query);
-        assert!(!parsed_query.parse());
+        assert!(parsed_query.parse().is_err());
     }
 
     #[test]
     fn parse_query_success() {
         let query = String::from("done == false");
         let mut parsed_query = Query::new(&query);
-        assert!(parsed_query.parse());
+        assert!(parsed_query.parse().is_ok());
     }
 }

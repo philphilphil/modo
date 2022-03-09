@@ -17,7 +17,7 @@ pub fn modo() {
         .unwrap();
 
     let mut query = Query::new(&user_input);
-    if !query.parse() {
+    if query.parse().is_err() {
         println!("{}", "Invalid query.");
         return;
     }
