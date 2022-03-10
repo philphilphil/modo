@@ -38,8 +38,8 @@ Filters always bear upon a single todo.
 
 ## Feature ideas
 - Ordering todos via query 
-- Give feedback about query parts that are wrong
-- Shortcut to open the .md file a todo is in the systems set .md editor
-- Ability to save queries and quickly execute them via shortcut
 - Grouping and OR support for filters
-- Display options, specify what properties of the todo should be displayed
+- Give feedback about query parts that are wrong
+- Switch to self build todo display/select dialog and add
+  - Shortcut to open the .md file a todo is in the systems set .md editor
+  - Display options, specify what properties of the todo should be displayed
