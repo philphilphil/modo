@@ -4,7 +4,7 @@ This is my first project in rust and will be improved over time. Some parts may 
 
 ## Usage
 call modo with a path to a folder where the markdown files (--path or -p) are and the query (--query or -q).
-Eg: `modo -p /User/phil/Notes -q "done == false"`
+Eg: `modo -p /User/phil/Notes -q 'done == false'`. Its important to enclose the query in single quotes (`'`).
 Navigation in todo list is done via arrow keys. Pressing enter or space in a todolist will check/uncheck the selected todo. 
 Pressing ESC ends the program.
 

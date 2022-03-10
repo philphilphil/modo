@@ -14,7 +14,7 @@ struct Args {
     path: Option<PathBuf>,
 
     /// Query for the todos
-    #[clap(short, long, default_value="")]
+    #[clap(short, long, default_value="", parse(from_str))]
     query: String,
 }
 
