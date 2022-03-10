@@ -38,7 +38,7 @@ pub fn modo(path: PathBuf, query: String) {
             .default(0)
             .items(&todo_strings)
             .interact_opt()
-            .unwrap();
+            .expect("Issue initializing selector.");
 
         if let Some(selection) = selection {
             let selected_todo = &todos[selection];

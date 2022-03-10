@@ -36,7 +36,7 @@ impl Query {
                 return Err(anyhow!("Could not parse query."));
             }
             let caps = re.captures(&q).unwrap();
-            let clause = Predicate::new(&caps[1], &caps[2], &caps[3]);
+            let clause = Predicate::new(&caps[1], &caps[2], &caps[3])?;
             self.predicates.push(clause);
         }
 

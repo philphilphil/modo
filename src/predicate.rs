@@ -1,3 +1,5 @@
+use anyhow::Result;
+
 #[derive(Debug)]
 pub struct Predicate {
     pub property: Property,
@@ -7,7 +9,7 @@ pub struct Predicate {
 }
 
 impl Predicate {
-    pub fn new(property: &str, operator: &str, expression: &str) -> Predicate {
+    pub fn new(property: &str, operator: &str, expression: &str) -> Result<Predicate> {
         let mut clause = Predicate::default();
 
         match property {
@@ -27,15 +29,13 @@ impl Predicate {
             _ => panic!("Can't parse operator."),
         }
 
-        // TODO: check for "" and remove
         clause.expr_string = expression.to_lowercase();
 
         if matches!(clause.property, Property::Done) {
-            // TODO: Error handling
-            clause.expr_bool = clause.expr_string.parse().unwrap()
+            clause.expr_bool = clause.expr_string.parse()?
         }
 
-        clause
+        Ok(clause)
     }
 }
 
