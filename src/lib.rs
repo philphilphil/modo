@@ -11,7 +11,7 @@ use todo::Todo;
 pub fn modo(path: PathBuf, query: String) {
     let mut query = Query::new(&query);
     if query.parse().is_err() {
-        println!("{}", "Invalid query.");
+        println!("Invalid query.");
         return;
     }
 
@@ -26,8 +26,8 @@ pub fn modo(path: PathBuf, query: String) {
         filter::filter(&query, &mut todos);
         //println!("DEBUG: Todo count after filter: {}", todos.len());
 
-        if todos.len() < 1 {
-            println!("{}", "No todos found.");
+        if todos.is_empty() {
+            println!("No todos found.");
             break;
         }
 

@@ -8,26 +8,20 @@ fn read_md_file(file: &DirEntry, todos: &mut Vec<Todo>) -> io::Result<()> {
     if file.file_name().to_str().unwrap().ends_with("md") {
         let data = fs::read_to_string(file.path())?;
 
-        let mut line_no = 0;
-        for line in data.lines() {
-            line_no += 1;
+        for (line_no, line) in data.lines().enumerate() {
             let line_trimed = line.trim_start();
 
             if !line_trimed.starts_with("- [x]") && !line_trimed.starts_with("- [ ]") {
                 continue;
             }
 
-            let done = if line_trimed.starts_with("- [x]") {
-                true
-            } else {
-                false
-            };
+            let done = line_trimed.starts_with("- [x]");
 
-            let first_heading = get_first_heading(&data, line_no);
+            let first_heading = get_first_heading(&data, (line_no + 1) as u32);
             let todo = Todo::new(
                 &line_trimed[6..line_trimed.len()],
                 &file.file_name().to_str().unwrap().to_lowercase(),
-                line_no,
+                (line_no + 1) as u32,
                 done,
                 file.path().to_path_buf(),
                 first_heading.to_lowercase(),
@@ -40,7 +34,7 @@ fn read_md_file(file: &DirEntry, todos: &mut Vec<Todo>) -> io::Result<()> {
     Ok(())
 }
 
-fn get_first_heading(data: &String, todo_line_no: i32) -> String {
+fn get_first_heading(data: &str, todo_line_no: u32) -> String {
     // TODO: Search in other direction
     let mut line_no = 1;
     let mut heading = String::from("");
@@ -49,7 +43,7 @@ fn get_first_heading(data: &String, todo_line_no: i32) -> String {
             break;
         }
 
-        if line.trim_start().starts_with("#") {
+        if line.trim_start().starts_with('#') {
             heading = line.trim_start().to_string();
         }
 

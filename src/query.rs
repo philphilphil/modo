@@ -23,7 +23,7 @@ impl Query {
     }
 
     pub fn parse(&mut self) -> Result<()> {
-        if self.input_string == "" {
+        if self.input_string.is_empty() {
             return Ok(());
         }
 
@@ -32,10 +32,10 @@ impl Query {
             // Todo: split regex, done can only have == true/false
             let re = Regex::new("(done|path|filename|heading|name) (==|!=|<<|!<) (.*)").unwrap();
 
-            if !re.is_match(&q) {
+            if !re.is_match(q) {
                 return Err(anyhow!("Could not parse query."));
             }
-            let caps = re.captures(&q).unwrap();
+            let caps = re.captures(q).unwrap();
             let clause = Predicate::new(&caps[1], &caps[2], &caps[3])?;
             self.predicates.push(clause);
         }
