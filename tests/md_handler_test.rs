@@ -1,12 +1,12 @@
 mod common;
 use common::md_test_file_creator;
 use modo::{md_handler, todo::Todo};
-use tempdir::TempDir;
+use tempfile::TempDir;
 
 #[test]
 fn test_parse_single_file() {
     let mut todos: Vec<Todo> = vec![];
-    let dir = TempDir::new("modo_integrationtests").unwrap();
+    let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_1_open_todo(&dir, "file0.md").unwrap();
 
     md_handler::load_data(dir.path(), &mut todos).unwrap();
@@ -21,7 +21,7 @@ fn test_parse_single_file() {
 #[test]
 fn test_tick_single_file() {
     let mut todos: Vec<Todo> = vec![];
-    let dir = TempDir::new("modo_integrationtests").unwrap();
+    let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_1_open_todo(&dir, "file0.md").unwrap();
 
     md_handler::load_data(dir.path(), &mut todos).unwrap();
@@ -38,7 +38,7 @@ fn test_tick_single_file() {
 #[test]
 fn test_parse_single_complex_file() {
     let mut todos: Vec<Todo> = vec![];
-    let dir = TempDir::new("modo_integrationtests").unwrap();
+    let dir = TempDir::new().unwrap();
     md_test_file_creator::complex_23_todos_15_open(&dir, "file0.md").unwrap();
 
     md_handler::load_data(dir.path(), &mut todos).unwrap();
@@ -50,7 +50,7 @@ fn test_parse_single_complex_file() {
 #[test]
 fn test_parse_three_files() {
     let mut todos: Vec<Todo> = vec![];
-    let dir = TempDir::new("modo_integrationtests").unwrap();
+    let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_1_open_todo(&dir, "file0.md").unwrap();
     md_test_file_creator::simple_1_open_todo(&dir, "file1.md").unwrap();
     md_test_file_creator::simple_1_open_todo(&dir, "file2.md").unwrap();
@@ -68,7 +68,7 @@ fn test_parse_three_files() {
 #[test]
 fn test_parse_multiple_file_types() {
     let mut todos: Vec<Todo> = vec![];
-    let dir = TempDir::new("modo_integrationtests").unwrap();
+    let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_1_open_todo(&dir, "file0.md").unwrap();
     md_test_file_creator::simple_1_open_todo(&dir, "file1.txt").unwrap();
     md_test_file_creator::simple_1_open_todo(&dir, "file2.mad").unwrap();
@@ -85,7 +85,7 @@ fn test_parse_multiple_file_types() {
 #[test]
 fn test_parse_single_files_multiple_todos() {
     let mut todos: Vec<Todo> = vec![];
-    let dir = TempDir::new("modo_integrationtests").unwrap();
+    let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file_123_323.md").unwrap();
 
     md_handler::load_data(dir.path(), &mut todos).unwrap();
@@ -100,7 +100,7 @@ fn test_parse_single_files_multiple_todos() {
 #[test]
 fn test_parse_single_file_with_headers() {
     let mut todos: Vec<Todo> = vec![];
-    let dir = TempDir::new("modo_integrationtests").unwrap();
+    let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file1.md").unwrap();
 
     md_handler::load_data(dir.path(), &mut todos).unwrap();
@@ -135,7 +135,7 @@ fn test_parse_single_file_with_headers() {
 #[test]
 fn test_parse_and_tick_multiple_files_multiple_todos() {
     let mut todos: Vec<Todo> = vec![];
-    let dir = TempDir::new("modo_integrationtests").unwrap();
+    let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file_123_323.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "afile_123_323.md").unwrap();
 
@@ -164,16 +164,16 @@ fn test_parse_and_tick_multiple_files_multiple_todos() {
 #[test]
 fn test_parse_multiple_files_and_folders_multiple_todos() {
     let mut todos: Vec<Todo> = vec![];
-    let dir = TempDir::new("modo_integrationtests").unwrap();
+    let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file2.md").unwrap();
-    let dir_depth1 = TempDir::new_in(&dir, "modo_integrationtests").unwrap();
+    let dir_depth1 = TempDir::new_in(&dir).unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir_depth1, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir_depth1, "file2.md").unwrap();
-    let _dir_depth1_2 = TempDir::new_in(&dir, "modo_integrationtests").unwrap();
+    let _dir_depth1_2 = TempDir::new_in(&dir).unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth1_2, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth1_2, "file2.md").unwrap();
-    let _dir_depth2 = TempDir::new_in(&dir_depth1, "modo_integrationtests").unwrap();
+    let _dir_depth2 = TempDir::new_in(&dir_depth1).unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth2, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth2, "file2.md").unwrap();
 
@@ -188,23 +188,23 @@ fn test_parse_multiple_files_and_folders_multiple_todos() {
 #[test]
 fn test_parse_multiple_complex_files_and_folders_multiple_todos() {
     let mut todos: Vec<Todo> = vec![];
-    let dir = TempDir::new("modo_integrationtests").unwrap();
+    let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file2.md").unwrap();
-    let _dir_depth1 = TempDir::new_in(&dir, "modo_integrationtests").unwrap();
+    let _dir_depth1 = TempDir::new_in(&dir).unwrap();
     md_test_file_creator::complex_23_todos_15_open(&_dir_depth1, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth1, "file2.md").unwrap();
-    let _dir_depth1_2 = TempDir::new_in(&dir, "modo_integrationtests").unwrap();
+    let _dir_depth1_2 = TempDir::new_in(&dir).unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth1_2, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth1_2, "file2.md").unwrap();
-    let _dir_depth2 = TempDir::new_in(&_dir_depth1, "modo_integrationtests").unwrap();
+    let _dir_depth2 = TempDir::new_in(&_dir_depth1).unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth2, "file1.md").unwrap();
     md_test_file_creator::complex_23_todos_15_open(&_dir_depth2, "file2.md").unwrap();
-    let _dir_depth3 = TempDir::new_in(&_dir_depth2, "modo_integrationtests").unwrap();
-    let _dir_depth4 = TempDir::new_in(&_dir_depth3, "modo_integrationtests").unwrap();
-    let _dir_depth5 = TempDir::new_in(&_dir_depth4, "modo_integrationtests").unwrap();
-    let _dir_depth6 = TempDir::new_in(&_dir_depth5, "modo_integrationtests").unwrap();
-    let _dir_depth7 = TempDir::new_in(&_dir_depth6, "modo_integrationtests").unwrap();
+    let _dir_depth3 = TempDir::new_in(&_dir_depth2).unwrap();
+    let _dir_depth4 = TempDir::new_in(&_dir_depth3).unwrap();
+    let _dir_depth5 = TempDir::new_in(&_dir_depth4).unwrap();
+    let _dir_depth6 = TempDir::new_in(&_dir_depth5).unwrap();
+    let _dir_depth7 = TempDir::new_in(&_dir_depth6).unwrap();
     md_test_file_creator::complex_23_todos_15_open(&_dir_depth7, "file1.md").unwrap();
     md_test_file_creator::complex_23_todos_15_open(&_dir_depth7, "file2.md").unwrap();
 

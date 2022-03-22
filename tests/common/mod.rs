@@ -1,7 +1,7 @@
 pub mod md_test_file_creator {
     use std::fs;
     use std::io;
-    use tempdir::TempDir;
+    use tempfile::TempDir;
 
     #[allow(dead_code)] // code only used in tests, shows up as warning
     pub fn simple_1_open_todo(dir: &TempDir, filename: &str) -> io::Result<()> {

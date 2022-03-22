@@ -1,12 +1,12 @@
 mod common;
 use common::md_test_file_creator;
 use modo::{filter, md_handler, query::Query, todo::Todo};
-use tempdir::TempDir;
+use tempfile::TempDir;
 
 #[test]
 fn test_filter_done() {
     let mut todos: Vec<Todo> = vec![];
-    let dir = TempDir::new("modo_integrationtests").unwrap();
+    let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file0.md").unwrap();
     md_handler::load_data(dir.path(), &mut todos).unwrap();
 
@@ -32,7 +32,7 @@ fn test_filter_done() {
 #[test]
 fn test_filter_name() {
     let mut todos: Vec<Todo> = vec![];
-    let dir = TempDir::new("modo_integrationtests").unwrap();
+    let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file0.md").unwrap();
     md_handler::load_data(dir.path(), &mut todos).unwrap();
 
@@ -74,7 +74,7 @@ fn test_filter_name() {
 #[test]
 fn test_filter_heading() {
     let mut todos: Vec<Todo> = vec![];
-    let dir = TempDir::new("modo_integrationtests").unwrap();
+    let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file0.md").unwrap();
     md_handler::load_data(dir.path(), &mut todos).unwrap();
 
@@ -116,7 +116,7 @@ fn test_filter_heading() {
 #[test]
 fn test_filter_filename() {
     let mut todos: Vec<Todo> = vec![];
-    let dir = TempDir::new("modo_integrationtests").unwrap();
+    let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file0.md").unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file2.md").unwrap();
@@ -161,7 +161,7 @@ fn test_filter_filename() {
 #[test]
 fn test_filter_path() {
     let mut todos: Vec<Todo> = vec![];
-    let dir = TempDir::new("modo_integrationtests").unwrap();
+    let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file0.md").unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file2.md").unwrap();
