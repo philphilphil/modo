@@ -167,13 +167,13 @@ fn test_parse_multiple_files_and_folders_multiple_todos() {
     let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file2.md").unwrap();
-    let dir_depth1 = TempDir::new_in(&dir, ).unwrap();
+    let dir_depth1 = TempDir::new_in(&dir).unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir_depth1, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir_depth1, "file2.md").unwrap();
-    let _dir_depth1_2 = TempDir::new_in(&dir, ).unwrap();
+    let _dir_depth1_2 = TempDir::new_in(&dir).unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth1_2, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth1_2, "file2.md").unwrap();
-    let _dir_depth2 = TempDir::new_in(&dir_depth1, ).unwrap();
+    let _dir_depth2 = TempDir::new_in(&dir_depth1).unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth2, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth2, "file2.md").unwrap();
 
@@ -191,13 +191,13 @@ fn test_parse_multiple_complex_files_and_folders_multiple_todos() {
     let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file2.md").unwrap();
-    let _dir_depth1 = TempDir::new_in(&dir, ).unwrap();
+    let _dir_depth1 = TempDir::new_in(&dir).unwrap();
     md_test_file_creator::complex_23_todos_15_open(&_dir_depth1, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth1, "file2.md").unwrap();
-    let _dir_depth1_2 = TempDir::new_in(&dir, ).unwrap();
+    let _dir_depth1_2 = TempDir::new_in(&dir).unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth1_2, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth1_2, "file2.md").unwrap();
-    let _dir_depth2 = TempDir::new_in(&_dir_depth1, ).unwrap();
+    let _dir_depth2 = TempDir::new_in(&_dir_depth1).unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth2, "file1.md").unwrap();
     md_test_file_creator::complex_23_todos_15_open(&_dir_depth2, "file2.md").unwrap();
     let _dir_depth3 = TempDir::new_in(&_dir_depth2).unwrap();
