@@ -28,6 +28,8 @@ pub fn modo(path: PathBuf, query: String) -> Result<()> {
         //println!("DEBUG: {:#?}", todos);
         //println!("DEBUG: Todo count: {}", todos.len());
         filter::filter(&query, &mut todos);
+        todos.sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
+        todos.sort_by(|a, b| a.done.cmp(&b.done));
         //println!("DEBUG: Todo count after filter: {}", todos.len());
 
         if todos.is_empty() {
