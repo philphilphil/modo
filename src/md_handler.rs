@@ -12,10 +12,8 @@ pub fn load_todos_from_dir(dir: &Path, todos: &mut Vec<Todo>) -> io::Result<()> 
             let path = entry.path();
             if path.is_dir() {
                 load_todos_from_dir(&path, todos)?;
-            } else {
-                if entry.file_name().to_str().unwrap().ends_with("md") {
-                    load_todos_from_mdfile(&entry, todos)?;
-                }
+            } else if entry.file_name().to_str().unwrap().ends_with("md") {
+                load_todos_from_mdfile(&entry, todos)?;
             }
         }
     }
