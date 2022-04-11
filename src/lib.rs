@@ -1,6 +1,7 @@
 mod error;
 pub mod filter;
-pub mod md_handler;
+pub mod md_reader;
+pub mod md_writer;
 mod predicate;
 pub mod query;
 pub mod todo;
@@ -22,7 +23,7 @@ pub fn modo(path: PathBuf, query: String) -> Result<()> {
     // println!("DEBUG: {:#?}", query.predicates);
     loop {
         let mut todos: Vec<Todo> = vec![];
-        md_handler::load_todos_from_dir(Path::new(&path), &mut todos)?;
+        md_reader::load_todos_from_dir(Path::new(&path), &mut todos)?;
 
         //println!("DEBUG: {:#?}", todos);
         //println!("DEBUG: Todo count: {}", todos.len());
@@ -46,7 +47,7 @@ pub fn modo(path: PathBuf, query: String) -> Result<()> {
         if let Some(selection) = selection {
             let selected_todo = &todos[selection];
 
-            md_handler::toggle_todo(&todos[selection])?;
+            md_writer::toggle_todo(&todos[selection])?;
 
             println!(
                 "Marked {} as {}.",

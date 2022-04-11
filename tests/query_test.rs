@@ -1,6 +1,6 @@
 mod common;
 use common::md_test_file_creator;
-use modo::{filter, md_handler, query::Query, todo::Todo};
+use modo::{filter, md_reader, query::Query, todo::Todo};
 use tempfile::TempDir;
 
 #[test]
@@ -18,7 +18,7 @@ fn test_querys_1() {
     let _dir_depth2 = TempDir::new_in(&dir_depth1).unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth2, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth2, "file2.md").unwrap();
-    md_handler::load_todos_from_dir(dir.path(), &mut todos).unwrap();
+    md_reader::load_todos_from_dir(dir.path(), &mut todos).unwrap();
 
     let mut todos2 = todos.clone();
     let query_string = String::from("done == true and filename << file");
@@ -73,7 +73,7 @@ fn test_querys_2() {
     let _dir_depth7 = TempDir::new_in(&_dir_depth6).unwrap();
     md_test_file_creator::complex_23_todos_15_open(&_dir_depth7, "file1.md").unwrap();
     md_test_file_creator::complex_23_todos_15_open(&_dir_depth7, "file2.md").unwrap();
-    md_handler::load_todos_from_dir(dir.path(), &mut todos).unwrap();
+    md_reader::load_todos_from_dir(dir.path(), &mut todos).unwrap();
 
     let mut todos2 = todos.clone();
     let query_string = String::from("done == false and filename << file2.md");
