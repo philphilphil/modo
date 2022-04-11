@@ -20,9 +20,9 @@ struct Args {
 
 fn main() {
     let args = Args::parse();
-    match modo::modo(args.path.unwrap(), args.query) {
-        Err(e) => println!("Error: {}", e),
-        Ok(()) => {}
+
+    if let Err(e) = modo::modo(args.path.unwrap(), args.query) {
+        println!("Error: {}", e);
     }
 }
 
