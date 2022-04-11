@@ -4,31 +4,47 @@ use std::fs::DirEntry;
 use std::io;
 use std::path::Path;
 
-fn read_md_file(file: &DirEntry, todos: &mut Vec<Todo>) -> io::Result<()> {
-    if file.file_name().to_str().unwrap().ends_with("md") {
-        let data = fs::read_to_string(file.path())?;
-
-        for (line_no, line) in data.lines().enumerate() {
-            let line_trimed = line.trim_start();
-
-            if !line_trimed.starts_with("- [x]") && !line_trimed.starts_with("- [ ]") {
-                continue;
+// Itterate all directorys and get md files
+pub fn load_todos_from_dir(dir: &Path, todos: &mut Vec<Todo>) -> io::Result<()> {
+    if dir.is_dir() {
+        for entry in fs::read_dir(dir)? {
+            let entry = entry?;
+            let path = entry.path();
+            if path.is_dir() {
+                load_todos_from_dir(&path, todos)?;
+            } else {
+                if entry.file_name().to_str().unwrap().ends_with("md") {
+                    load_todos_from_mdfile(&entry, todos)?;
+                }
             }
-
-            let done = line_trimed.starts_with("- [x]");
-
-            let first_heading = get_first_heading(&data, (line_no + 1) as u32);
-            let todo = Todo::new(
-                &line_trimed[6..line_trimed.len()],
-                &file.file_name().to_str().unwrap().to_lowercase(),
-                (line_no + 1) as u32,
-                done,
-                file.path().to_path_buf(),
-                first_heading.to_lowercase(),
-            );
-
-            todos.push(todo);
         }
+    }
+    Ok(())
+}
+
+fn load_todos_from_mdfile(file: &DirEntry, todos: &mut Vec<Todo>) -> io::Result<()> {
+    let data = fs::read_to_string(file.path())?;
+
+    for (line_no, line) in data.lines().enumerate() {
+        let line_trimed = line.trim_start();
+
+        if !line_trimed.starts_with("- [x]") && !line_trimed.starts_with("- [ ]") {
+            continue;
+        }
+
+        let done = line_trimed.starts_with("- [x]");
+
+        let first_heading = get_first_heading(&data, (line_no + 1) as u32);
+        let todo = Todo::new(
+            &line_trimed[6..line_trimed.len()],
+            &file.file_name().to_str().unwrap().to_lowercase(),
+            (line_no + 1) as u32,
+            done,
+            file.path().to_path_buf(),
+            first_heading.to_lowercase(),
+        );
+
+        todos.push(todo);
     }
 
     Ok(())
@@ -51,22 +67,6 @@ fn get_first_heading(data: &str, todo_line_no: u32) -> String {
     }
 
     heading
-}
-
-// Itterate all directorys and get md files
-pub fn load_data(dir: &Path, todos: &mut Vec<Todo>) -> io::Result<()> {
-    if dir.is_dir() {
-        for entry in fs::read_dir(dir)? {
-            let entry = entry?;
-            let path = entry.path();
-            if path.is_dir() {
-                load_data(&path, todos)?;
-            } else {
-                read_md_file(&entry, todos)?;
-            }
-        }
-    }
-    Ok(())
 }
 
 pub fn toggle_todo(todo: &Todo) -> io::Result<()> {

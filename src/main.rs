@@ -20,7 +20,10 @@ struct Args {
 
 fn main() {
     let args = Args::parse();
-    modo::modo(args.path.unwrap(), args.query);
+    match modo::modo(args.path.unwrap(), args.query) {
+        Err(e) => println!("Error: {}", e),
+        Ok(()) => {}
+    }
 }
 
 fn parse_path(str: &OsStr) -> Result<PathBuf, String> {

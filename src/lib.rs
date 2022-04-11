@@ -1,25 +1,28 @@
+mod error;
 pub mod filter;
 pub mod md_handler;
 mod predicate;
 pub mod query;
 pub mod todo;
+use anyhow::Result;
 use dialoguer::{theme::ColorfulTheme, Select};
 use query::Query;
 use std::path::{Path, PathBuf};
 use todo::Todo;
 
-pub fn modo(path: PathBuf, query: String) {
+use crate::error::InvalidQueryError;
+
+pub fn modo(path: PathBuf, query: String) -> Result<()> {
+    // Parse query
     let mut query = Query::new(&query);
     if query.parse().is_err() {
-        println!("Invalid query.");
-        return;
+        return Err(anyhow::Error::new(InvalidQueryError));
     }
 
     // println!("DEBUG: {:#?}", query.predicates);
     loop {
         let mut todos: Vec<Todo> = vec![];
-        md_handler::load_data(Path::new(&path), &mut todos)
-            .expect("Something went wrong reading the notes");
+        md_handler::load_todos_from_dir(Path::new(&path), &mut todos)?;
 
         //println!("DEBUG: {:#?}", todos);
         //println!("DEBUG: Todo count: {}", todos.len());
@@ -43,11 +46,10 @@ pub fn modo(path: PathBuf, query: String) {
         if let Some(selection) = selection {
             let selected_todo = &todos[selection];
 
-            md_handler::toggle_todo(&todos[selection])
-                .expect("Something went wront writing back to the md file.");
+            md_handler::toggle_todo(&todos[selection])?;
 
             println!(
-                "Marked {} as {}!",
+                "Marked {} as {}.",
                 selected_todo.name,
                 if selected_todo.done { "open" } else { "done" }
             );
@@ -55,4 +57,6 @@ pub fn modo(path: PathBuf, query: String) {
             break;
         }
     }
+
+    Ok(())
 }

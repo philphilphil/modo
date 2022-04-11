@@ -8,7 +8,7 @@ fn test_filter_done() {
     let mut todos: Vec<Todo> = vec![];
     let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file0.md").unwrap();
-    md_handler::load_data(dir.path(), &mut todos).unwrap();
+    md_handler::load_todos_from_dir(dir.path(), &mut todos).unwrap();
 
     // done true
     let mut todos2 = todos.clone();
@@ -34,7 +34,7 @@ fn test_filter_name() {
     let mut todos: Vec<Todo> = vec![];
     let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file0.md").unwrap();
-    md_handler::load_data(dir.path(), &mut todos).unwrap();
+    md_handler::load_todos_from_dir(dir.path(), &mut todos).unwrap();
 
     // contains
     let mut todos2 = todos.clone();
@@ -76,7 +76,7 @@ fn test_filter_heading() {
     let mut todos: Vec<Todo> = vec![];
     let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file0.md").unwrap();
-    md_handler::load_data(dir.path(), &mut todos).unwrap();
+    md_handler::load_todos_from_dir(dir.path(), &mut todos).unwrap();
 
     // contains
     let mut todos2 = todos.clone();
@@ -121,7 +121,7 @@ fn test_filter_filename() {
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file2.md").unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file3.md").unwrap();
-    md_handler::load_data(dir.path(), &mut todos).unwrap();
+    md_handler::load_todos_from_dir(dir.path(), &mut todos).unwrap();
 
     // contains
     let mut todos2 = todos.clone();
@@ -166,7 +166,7 @@ fn test_filter_path() {
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file2.md").unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file3.md").unwrap();
-    md_handler::load_data(dir.path(), &mut todos).unwrap();
+    md_handler::load_todos_from_dir(dir.path(), &mut todos).unwrap();
 
     // contains
     let mut todos2 = todos.clone();
