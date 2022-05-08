@@ -64,7 +64,6 @@ fn listen_key(mut cur_index: &mut i32, max: usize, screen: &mut i8, todos: &Vec<
         113 => *cur_index = -1, // Q
         120 => {
             // X
-            println!("{}", *cur_index);
             md_writer::toggle_todo(&todos[*cur_index as usize]).unwrap();
         }
         101 => *cur_index = -1, // E
