@@ -1,9 +1,10 @@
+use clap::Parser;
+use modo::todo::Todo;
 use std::{
     ffi::OsStr,
     path::{Path, PathBuf},
 };
-
-use clap::Parser;
+mod ui;
 
 /// Query todos in markdown files.
 #[derive(Parser, Debug)]
@@ -21,9 +22,15 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    if let Err(e) = modo::modo(args.path.unwrap(), args.query) {
-        println!("Error: {}", e);
+    let mut todo_strings: Vec<String> = Vec::new();
+    let mut todos: Vec<Todo> = Vec::new();
+    match modo::modo(args.path.unwrap(), &args.query) {
+        Ok(t) => todos = t,
+        Err(_) => todo!(),
     }
+
+    todo_strings = todos.iter().map(|t| t.to_string()).collect();
+    ui::draw_ui(&todos, &args.query);
 }
 
 fn parse_path(str: &OsStr) -> Result<PathBuf, String> {

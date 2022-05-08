@@ -38,9 +38,9 @@ impl Todo {
 
 impl Display for Todo {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        let mut todo_state = "➔";
+        let mut todo_state = "[ ]";
         if self.done {
-            todo_state = "✅"
+            todo_state = "[x]"
         }
         write!(f, "{} {}", todo_state, self.name)
     }
