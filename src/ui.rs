@@ -1,20 +1,31 @@
+use std::path::{Path, PathBuf};
+
 use crate::Todo;
 use modo::md_writer;
 use ncurses::*;
 
-enum SCREEN {
+enum Screen {
     Main,
     Add,
-    Edit,
+    Navigation,
+    Reload,
 }
 
-pub fn draw_ui(todos: &Vec<Todo>, query: &str) {
+pub fn draw_ui(query: &str, path: &Path) {
+    let mut todos: Vec<Todo> = Vec::new();
+    match modo::modo(&path, &query) {
+        Ok(t) => todos = t,
+        Err(_) => todo!(),
+    }
+
     let bw: WINDOW = initscr();
-    let mut cur_index: i32 = 0;
-    let mut screen: i8 = SCREEN::Main as i8; // Set the screen
     curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE); // Don't show the terminal cursor
     keypad(bw, true);
+    draw_table(&todos, query);
+}
 
+pub fn draw_table(todos: &Vec<Todo>, query: &str) {
+    let mut cur_index: i32 = 0;
     while cur_index != -1 {
         addstr("Query: ");
         addstr(query);
@@ -23,27 +34,31 @@ pub fn draw_ui(todos: &Vec<Todo>, query: &str) {
             addch(ACS_HLINE());
         }
         addstr("\n");
-        let mut i = 0;
-        if screen == SCREEN::Main as i8 {
-            // list_todos(&todos, cur_index);
-            for todo in todos.iter() {
-                if cur_index == i {
-                    addstr(&format!("> {} {}", &todo, "\n"));
-                } else {
-                    addstr(&format!("- {} {}", &todo, "\n"));
-                }
-                i += 1;
+        // list_todos(&todos, cur_index);
+        for (i, todo) in todos.iter().enumerate() {
+            if cur_index == i as i32 {
+                addstr(&format!("> {} {}", &todo, "\n"));
+            } else {
+                addstr(&format!("- {} {}", &todo, "\n"));
             }
-            // Listens for key
-            listen_key(&mut cur_index, todos.len(), &mut screen, &todos);
+        }
+        // Listens for key
+        match listen_key(&mut cur_index, todos.len(), todos) {
+            Screen::Navigation => {}
+            Screen::Reload => {
+                todo!();
+            }
+            _ => {}
         }
         refresh();
         clear();
+        endwin();
     }
-    endwin();
 }
 
-fn listen_key(mut cur_index: &mut i32, max: usize, screen: &mut i8, todos: &Vec<Todo>) {
+pub fn draw_query_edit() {}
+
+fn listen_key(mut cur_index: &mut i32, max: usize, todos: &Vec<Todo>) -> Screen {
     noecho();
     let k: i32 = getch();
     echo();
@@ -52,7 +67,8 @@ fn listen_key(mut cur_index: &mut i32, max: usize, screen: &mut i8, todos: &Vec<
         106 | KEY_DOWN => {
             // J / UP
             if *cur_index != max as i32 - 1 {
-                *cur_index += 1
+                *cur_index += 1;
+                return Screen::Navigation;
             }
         }
         107 | KEY_UP => {
@@ -60,13 +76,17 @@ fn listen_key(mut cur_index: &mut i32, max: usize, screen: &mut i8, todos: &Vec<
             if *cur_index != 0 {
                 *cur_index -= 1
             }
+            return Screen::Navigation;
         }
         113 => *cur_index = -1, // Q
         120 => {
             // X
             md_writer::toggle_todo(&todos[*cur_index as usize]).unwrap();
+            return Screen::Reload;
         }
         101 => *cur_index = -1, // E
         _ => {}
     }
+
+    Screen::Reload
 }

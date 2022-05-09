@@ -12,7 +12,7 @@ use todo::Todo;
 
 use crate::error::InvalidQueryError;
 
-pub fn modo(path: PathBuf, query: &str) -> Result<Vec<Todo>> {
+pub fn modo(path: &Path, query: &str) -> Result<Vec<Todo>> {
     // Parse query
     let mut query = Query::new(query);
     if query.parse().is_err() {

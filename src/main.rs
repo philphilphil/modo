@@ -22,15 +22,7 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    let mut todo_strings: Vec<String> = Vec::new();
-    let mut todos: Vec<Todo> = Vec::new();
-    match modo::modo(args.path.unwrap(), &args.query) {
-        Ok(t) => todos = t,
-        Err(_) => todo!(),
-    }
-
-    todo_strings = todos.iter().map(|t| t.to_string()).collect();
-    ui::draw_ui(&todos, &args.query);
+    ui::draw_ui(&args.query, args.path.as_ref().unwrap());
 }
 
 fn parse_path(str: &OsStr) -> Result<PathBuf, String> {
