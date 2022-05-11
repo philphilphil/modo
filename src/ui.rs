@@ -1,18 +1,18 @@
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use crate::Todo;
 use modo::md_writer;
 use ncurses::*;
 
 pub enum Screen {
-    Main,
-    Add,
     Navigation,
+    EditQuery,
     Reload,
     Quit,
 }
 
 pub fn draw_ui(query: &str, path: &Path) {
+    let mut query = query.to_string();
     let bw: WINDOW = initscr();
     curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE); // Don't show the terminal cursor
     keypad(bw, true);
@@ -20,23 +20,21 @@ pub fn draw_ui(query: &str, path: &Path) {
         refresh();
         clear();
         endwin();
-        let mut todos: Vec<Todo> = Vec::new();
-        match modo::modo(&path, &query) {
+        let mut todos: Vec<Todo> = vec![];
+        match modo::modo(path, &query) {
             Ok(t) => todos = t,
             Err(_) => todo!(),
         }
 
-        match draw_table(&todos, query) {
-            Screen::Navigation => {}
-            Screen::Reload => {
-                return;
-            }
+        match draw_navigation(&todos, &query) {
+            Screen::Quit => return,
+            Screen::EditQuery => draw_query_edit(&mut query),
             _ => {}
         }
     }
 }
 
-pub fn draw_table(todos: &Vec<Todo>, query: &str) -> Screen {
+pub fn draw_navigation(todos: &[Todo], query: &str) -> Screen {
     let mut cur_index: i32 = 0;
     while cur_index != -1 {
         refresh();
@@ -58,20 +56,24 @@ pub fn draw_table(todos: &Vec<Todo>, query: &str) -> Screen {
             }
         }
         // Listens for key
-        let key_result = listen_key(&mut cur_index, todos.len(), todos);
+        let key_result = listen_navigation_key(&mut cur_index, todos.len(), todos);
 
         match key_result {
             Screen::Navigation => continue,
-            _ => break,
+            Screen::Reload => return Screen::Reload,
+            Screen::Quit => return Screen::Quit,
+            Screen::EditQuery => return Screen::EditQuery,
         }
     }
 
     return Screen::Quit;
 }
 
-pub fn draw_query_edit() {}
+pub fn draw_query_edit(query: &mut String) {
+    *query = String::from("done == false");
+}
 
-fn listen_key(mut cur_index: &mut i32, max: usize, todos: &Vec<Todo>) -> Screen {
+fn listen_navigation_key(cur_index: &mut i32, max: usize, todos: &[Todo]) -> Screen {
     noecho();
     let k: i32 = getch();
     echo();
@@ -91,13 +93,13 @@ fn listen_key(mut cur_index: &mut i32, max: usize, todos: &Vec<Todo>) -> Screen 
             }
             return Screen::Navigation;
         }
-        113 => *cur_index = -1, // Q
+        113 => return Screen::Quit, // Q
         120 => {
             // X
             md_writer::toggle_todo(&todos[*cur_index as usize]).unwrap();
             return Screen::Reload;
         }
-        101 => *cur_index = -1, // E
+        101 => return Screen::EditQuery, // E
         _ => {}
     }
 
