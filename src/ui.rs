@@ -4,29 +4,44 @@ use crate::Todo;
 use modo::md_writer;
 use ncurses::*;
 
-enum Screen {
+pub enum Screen {
     Main,
     Add,
     Navigation,
     Reload,
+    Quit,
 }
 
 pub fn draw_ui(query: &str, path: &Path) {
-    let mut todos: Vec<Todo> = Vec::new();
-    match modo::modo(&path, &query) {
-        Ok(t) => todos = t,
-        Err(_) => todo!(),
-    }
-
     let bw: WINDOW = initscr();
     curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE); // Don't show the terminal cursor
     keypad(bw, true);
-    draw_table(&todos, query);
+    loop {
+        refresh();
+        clear();
+        endwin();
+        let mut todos: Vec<Todo> = Vec::new();
+        match modo::modo(&path, &query) {
+            Ok(t) => todos = t,
+            Err(_) => todo!(),
+        }
+
+        match draw_table(&todos, query) {
+            Screen::Navigation => {}
+            Screen::Reload => {
+                return;
+            }
+            _ => {}
+        }
+    }
 }
 
-pub fn draw_table(todos: &Vec<Todo>, query: &str) {
+pub fn draw_table(todos: &Vec<Todo>, query: &str) -> Screen {
     let mut cur_index: i32 = 0;
     while cur_index != -1 {
+        refresh();
+        clear();
+        endwin();
         addstr("Query: ");
         addstr(query);
         addstr("\n ");
@@ -43,17 +58,15 @@ pub fn draw_table(todos: &Vec<Todo>, query: &str) {
             }
         }
         // Listens for key
-        match listen_key(&mut cur_index, todos.len(), todos) {
-            Screen::Navigation => {}
-            Screen::Reload => {
-                todo!();
-            }
-            _ => {}
+        let key_result = listen_key(&mut cur_index, todos.len(), todos);
+
+        match key_result {
+            Screen::Navigation => continue,
+            _ => break,
         }
-        refresh();
-        clear();
-        endwin();
     }
+
+    return Screen::Quit;
 }
 
 pub fn draw_query_edit() {}
