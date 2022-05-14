@@ -1,8 +1,8 @@
-use std::path::Path;
-
 use crate::Todo;
+use anyhow::Result;
 use modo::md_writer;
 use ncurses::*;
+use std::path::Path;
 
 enum UserAction {
     Navigation,
@@ -10,31 +10,20 @@ enum UserAction {
     Refresh,
 }
 
-pub fn draw_ui(query: &str, path: &Path) {
-    let query = query.to_string();
-    let bw: WINDOW = initscr();
-    curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE); // Don't show the terminal cursor
-    keypad(bw, true);
+pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
+    let win: WINDOW = initscr();
+    curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
+    keypad(win, true);
 
+    // Outer loop with reload
     loop {
-        refresh();
-        clear();
-        endwin();
+        let todos = modo::modo(path, query)?;
         let mut cur_index: i32 = 0;
-        let todos: Vec<Todo>;
-        if let Ok(t) = modo::modo(path, &query) {
-            todos = t
-        } else {
-            todo!()
-        }
 
+        // Navigation
         loop {
-            refresh();
             clear();
-            endwin();
-            addstr("Query: ");
-            addstr(&query);
-            addstr("\n ");
+            addstr(&format!("Query: {}\n", query));
             for _i in 0..50 {
                 addch(ACS_HLINE());
             }
@@ -51,7 +40,10 @@ pub fn draw_ui(query: &str, path: &Path) {
             let key_result = listen_key(&mut cur_index, todos.len(), &todos);
             match key_result {
                 UserAction::Navigation => continue,
-                UserAction::Quit => return,
+                UserAction::Quit => {
+                    endwin();
+                    return Ok(());
+                }
                 UserAction::Refresh => break,
             }
         }
@@ -59,30 +51,26 @@ pub fn draw_ui(query: &str, path: &Path) {
 }
 
 fn listen_key(cur_index: &mut i32, max: usize, todos: &[Todo]) -> UserAction {
-    noecho();
-    let k: i32 = getch();
-    echo();
-
-    match k {
+    match getch() {
         106 | KEY_DOWN => {
-            // J / Arrow Down
+            // j / Arrow Down
             if *cur_index != max as i32 - 1 {
                 *cur_index += 1;
             }
         }
         107 | KEY_UP => {
-            // K / Arrow Up
+            // k / Arrow Up
             if *cur_index != 0 {
                 *cur_index -= 1
             }
         }
-        113 => return UserAction::Quit, // Q
+        113 => return UserAction::Quit, // q
         120 => {
             // X
             md_writer::toggle_todo(&todos[*cur_index as usize]).unwrap();
             return UserAction::Refresh;
         }
-        114 => return UserAction::Refresh,
+        114 => return UserAction::Refresh, // r
         _ => {}
     }
 

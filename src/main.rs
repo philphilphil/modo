@@ -21,7 +21,11 @@ struct Args {
 
 fn main() {
     let args = Args::parse();
-    ui::draw_ui(&args.query, args.path.as_ref().unwrap());
+
+    if let Err(e) = ui::draw_ui(&args.query, args.path.as_ref().unwrap()) {
+        ncurses::endwin();
+        println!("Error: {}", e);
+    }
 }
 
 fn parse_path(str: &OsStr) -> Result<PathBuf, String> {
