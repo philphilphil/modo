@@ -40,6 +40,6 @@ Filters always bear upon a single todo.
 - Ordering todos via query 
 - Grouping and OR support for filters
 - Give feedback about query parts that are wrong
-- Switch to self build todo display/select dialog and add
-  - Shortcut to open the .md file a todo is in the systems set .md editor
-  - Display options, specify what properties of the todo should be displayed
+- Shortcut to open the .md file a todo is in the systems set .md editor
+- Display options, specify what properties of the todo should be displayed
+- Option to edit and reload the query

@@ -21,7 +21,6 @@ struct Args {
 
 fn main() {
     let args = Args::parse();
-
     ui::draw_ui(&args.query, args.path.as_ref().unwrap());
 }
 
