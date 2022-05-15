@@ -3,10 +3,14 @@ markdown todo cli interface is a small application to query markdown todos with 
 This is my first project in rust and will be improved over time. Some parts may be implemented not ideal.
 
 ## Usage
-call modo with a path to a folder where the markdown files (--path or -p) are and the query (--query or -q).
-Eg: `modo -p /User/phil/Notes -q 'done == false'`. Its important to enclose the query in single quotes (`'`).
-Navigation in todo list is done via arrow keys. Pressing enter or space in a todolist will check/uncheck the selected todo. 
-Pressing ESC ends the program.
+call modo with a path to a folder with markdown files (--path or -p) and the query (--query or -q).
+Eg: `modo -p /User/phil/Notes -q 'done == false'`. 
+
+### Keybindings
+- `j/k` and `arrow up/down` for navigation in the todo list.
+- `x` or `enter` mark selected todo done/open.
+- `r` reloads.
+- `q` quits.
 
 ## Filter Queries
 An empty query will return all todos. All filters are case insentivite.
@@ -42,4 +46,4 @@ Filters always bear upon a single todo.
 - Give feedback about query parts that are wrong
 - Shortcut to open the .md file a todo is in the systems set .md editor
 - Display options, specify what properties of the todo should be displayed
-- Option to edit and reload the query
+- Option to edit the query in the app

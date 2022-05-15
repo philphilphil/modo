@@ -7,7 +7,7 @@ use std::path::Path;
 enum UserAction {
     Navigation,
     Quit,
-    Refresh,
+    Reload,
 }
 
 pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
@@ -44,7 +44,7 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
                     endwin();
                     return Ok(());
                 }
-                UserAction::Refresh => break,
+                UserAction::Reload => break,
             }
         }
     }
@@ -65,12 +65,12 @@ fn listen_key(cur_index: &mut i32, max: usize, todos: &[Todo]) -> UserAction {
             }
         }
         113 => return UserAction::Quit, // q
-        120 => {
+        120 | 10 => {
             // X
             md_writer::toggle_todo(&todos[*cur_index as usize]).unwrap();
-            return UserAction::Refresh;
+            return UserAction::Reload;
         }
-        114 => return UserAction::Refresh, // r
+        114 => return UserAction::Reload, // r
         _ => {}
     }
 
