@@ -23,7 +23,6 @@ fn main() {
     let args = Args::parse();
 
     if let Err(e) = ui::draw_ui(&args.query, args.path.as_ref().unwrap()) {
-        ncurses::endwin();
         println!("Error: {}", e);
     }
 }
