@@ -38,7 +38,7 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
                 }
             }
 
-            let key_result = listen_key(&mut selected_todo_index, &todos);
+            let key_result = listen_nav_key(&mut selected_todo_index, &todos);
             match key_result {
                 UserAction::Navigation => continue,
                 UserAction::Details => {
@@ -57,8 +57,11 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
 
 fn draw_todo_details(todo: &Todo) {
     clear();
-    addstr(&todo.heading);
-
+    addstr(&format!("Name: {}\n", todo.name));
+    addstr(&format!("Status: {}\n", todo.done));
+    addstr(&format!("Heading: {}\n", todo.heading));
+    addstr(&format!("Filename: {}\n", todo.filename));
+    addstr(&format!("Line Number: {}\n", todo.line_no));
     match getch() {
         120 | 10 => {
             // x / enter
@@ -68,7 +71,7 @@ fn draw_todo_details(todo: &Todo) {
     }
 }
 
-fn listen_key(selected_todo_index: &mut usize, todos: &[Todo]) -> UserAction {
+fn listen_nav_key(selected_todo_index: &mut usize, todos: &[Todo]) -> UserAction {
     match getch() {
         106 | KEY_DOWN => {
             // j / Arrow Down
