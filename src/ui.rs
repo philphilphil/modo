@@ -8,6 +8,7 @@ enum UserAction {
     Navigation,
     Quit,
     Reload,
+    Details,
 }
 
 pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
@@ -18,7 +19,7 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
     // Outer loop with reload
     loop {
         let todos = modo::modo(path, query)?;
-        let mut cur_index: i32 = 0;
+        let mut selected_todo_index: usize = 0;
 
         // Navigation
         loop {
@@ -30,16 +31,20 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
             addstr("\n");
 
             for (i, todo) in todos.iter().enumerate() {
-                if cur_index == i as i32 {
+                if selected_todo_index == i {
                     addstr(&format!("> {} {}", &todo, "\n"));
                 } else {
                     addstr(&format!("- {} {}", &todo, "\n"));
                 }
             }
 
-            let key_result = listen_key(&mut cur_index, todos.len(), &todos);
+            let key_result = listen_key(&mut selected_todo_index, &todos);
             match key_result {
                 UserAction::Navigation => continue,
+                UserAction::Details => {
+                    draw_todo_details(&todos[selected_todo_index as usize]);
+                    break;
+                }
                 UserAction::Quit => {
                     endwin();
                     return Ok(());
@@ -50,27 +55,41 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
     }
 }
 
-fn listen_key(cur_index: &mut i32, max: usize, todos: &[Todo]) -> UserAction {
+fn draw_todo_details(todo: &Todo) {
+    clear();
+    addstr(&todo.heading);
+
+    match getch() {
+        120 | 10 => {
+            // x / enter
+            md_writer::toggle_todo(todo).unwrap();
+        }
+        _ => {}
+    }
+}
+
+fn listen_key(selected_todo_index: &mut usize, todos: &[Todo]) -> UserAction {
     match getch() {
         106 | KEY_DOWN => {
             // j / Arrow Down
-            if *cur_index != max as i32 - 1 {
-                *cur_index += 1;
+            if *selected_todo_index != todos.len() - 1 {
+                *selected_todo_index += 1;
             }
         }
         107 | KEY_UP => {
             // k / Arrow Up
-            if *cur_index != 0 {
-                *cur_index -= 1
+            if *selected_todo_index != 0 {
+                *selected_todo_index -= 1
             }
         }
         113 => return UserAction::Quit, // q
         120 | 10 => {
-            // X
-            md_writer::toggle_todo(&todos[*cur_index as usize]).unwrap();
+            // x / enter
+            md_writer::toggle_todo(&todos[*selected_todo_index]).unwrap();
             return UserAction::Reload;
         }
-        114 => return UserAction::Reload, // r
+        114 => return UserAction::Reload,  // r
+        100 => return UserAction::Details, // d
         _ => {}
     }
 

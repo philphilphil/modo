@@ -8,7 +8,10 @@ Eg: `modo -p /User/phil/Notes -q 'done == false'`.
 
 ### Keybindings
 - `j/k` and `arrow up/down` for navigation in the todo list.
-- `x` or `enter` mark selected todo done/open.
+- `x` or `enter` toggle todo done/open.
+- `d` shows todo details.
+  - `x` or `enter` toggle todo and returns to list.
+  - `any other key` returns to list.
 - `r` reloads.
 - `q` quits.
 
