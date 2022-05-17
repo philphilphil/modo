@@ -8,6 +8,7 @@ use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
 use termion::{color, cursor, style};
+
 enum UserAction {
     Navigation,
     Quit,
@@ -17,9 +18,10 @@ enum UserAction {
 
 pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
     // Outer loop with reload
+    let mut selected_todo_index: usize = 0;
+
     loop {
         let todos = modo::modo(path, query)?;
-        let mut selected_todo_index: usize = 0;
         let mut stdout = stdout().into_raw_mode().unwrap();
 
         // Navigation
@@ -53,6 +55,34 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
             }
         }
     }
+}
+
+fn listen_nav_key(selected_todo_index: &mut usize, todos: &[Todo]) -> UserAction {
+    if let Some(c) = stdin().keys().next() {
+        match c.unwrap() {
+            Key::Char('j') | Key::Down => {
+                if *selected_todo_index != todos.len() - 1 {
+                    *selected_todo_index += 1;
+                }
+            }
+            Key::Char('k') | Key::Up => {
+                if *selected_todo_index != 0 {
+                    *selected_todo_index -= 1
+                }
+            }
+            Key::Char('q') => return UserAction::Quit, // q
+            Key::Char('x') => {
+                md_writer::toggle_todo(&todos[*selected_todo_index]).unwrap();
+                return UserAction::Reload;
+            }
+            Key::Char('r') => return UserAction::Reload, // r
+            Key::Char('d') => return UserAction::Details, // d
+            _ => {}
+        }
+        return UserAction::Navigation;
+    }
+
+    UserAction::Navigation
 }
 
 fn draw_todo_details(todo: &Todo, stdout: &mut Stdout) {
@@ -104,32 +134,4 @@ fn draw_todo_detail_line_color<K: termion::color::Color>(
         value,
         style::Reset,
     );
-}
-
-fn listen_nav_key(selected_todo_index: &mut usize, todos: &[Todo]) -> UserAction {
-    if let Some(c) = stdin().keys().next() {
-        match c.unwrap() {
-            Key::Char('j') | Key::Down => {
-                if *selected_todo_index != todos.len() - 1 {
-                    *selected_todo_index += 1;
-                }
-            }
-            Key::Char('k') | Key::Up => {
-                if *selected_todo_index != 0 {
-                    *selected_todo_index -= 1
-                }
-            }
-            Key::Char('q') => return UserAction::Quit, // q
-            Key::Char('x') => {
-                md_writer::toggle_todo(&todos[*selected_todo_index]).unwrap();
-                return UserAction::Reload;
-            }
-            Key::Char('r') => return UserAction::Reload, // r
-            Key::Char('d') => return UserAction::Details, // d
-            _ => {}
-        }
-        return UserAction::Navigation;
-    }
-
-    UserAction::Navigation
 }
