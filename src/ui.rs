@@ -16,28 +16,62 @@ enum UserAction {
     Details,
 }
 
+// TODO: Change functionality so it always displays the todos from the initial query. if todos get
+// done, move them to the closed section and the other way arround.
+// add "r" to reload the query. indicate changed data and that the query isnt accurate anymore with a *: Query: * bla = bla
+// add "e" to edit the query.
+
 pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
     // Outer loop with reload
-    let mut selected_todo_index: usize = 0;
+    let mut selected_todo_index: usize = 5;
 
     loop {
         let todos = modo::modo(path, query)?;
+        let (todos_open, todos_closed): (Vec<&Todo>, Vec<&Todo>) =
+            todos.iter().partition(|t| !t.done);
         let mut stdout = stdout().into_raw_mode().unwrap();
 
         // Navigation
         loop {
             write!(stdout, "{}{}", termion::clear::All, termion::cursor::Hide).unwrap();
             stdout.flush().unwrap();
-            println!("{}Query: {}", termion::cursor::Goto(1, 1), query);
+            println!(
+                "{}{}Query:{} {}",
+                termion::cursor::Goto(1, 1),
+                style::Bold,
+                style::Reset,
+                query
+            );
+            println!(
+                "{}─────────────────────────────────────",
+                cursor::Goto(1, 2)
+            );
+            println!(
+                "{}{}{}Open:{} {} {}",
+                termion::cursor::Goto(1, 4),
+                style::Bold,
+                color::Fg(color::Red),
+                style::Reset,
+                todos_open.len(),
+                style::Bold,
+            );
 
-            for (i, todo) in todos.iter().enumerate() {
-                write!(stdout, "{}", termion::cursor::Goto(1, i as u16 + 3)).unwrap();
-                if selected_todo_index == i {
-                    println!("> {}", &todo);
-                } else {
-                    println!("- {}", &todo);
-                }
-            }
+            let mut line: u16 = 5;
+            draw_todo_line(&todos_open, &mut line, &selected_todo_index);
+
+            line += 1;
+            println!(
+                "{}{}{}Closed:{} {} {}",
+                termion::cursor::Goto(1, line),
+                style::Bold,
+                color::Fg(color::Green),
+                style::Reset,
+                todos_closed.len(),
+                style::Bold,
+            );
+
+            line += 1;
+            draw_todo_line(&todos_closed, &mut line, &selected_todo_index);
 
             stdout.flush().unwrap();
             let key_result = listen_nav_key(&mut selected_todo_index, &todos);
@@ -54,6 +88,18 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
                 UserAction::Reload => break,
             }
         }
+    }
+}
+
+fn draw_todo_line(todos: &Vec<&Todo>, line: &mut u16, selected_todo_index: &usize) {
+    for todo in todos.iter() {
+        write!(stdout(), "{}", termion::cursor::Goto(1, *line)).unwrap();
+        if *selected_todo_index == *line as usize {
+            println!("> {}", &todo);
+        } else {
+            println!("- {}", &todo);
+        }
+        *line += 1;
     }
 }
 
@@ -86,9 +132,9 @@ fn listen_nav_key(selected_todo_index: &mut usize, todos: &[Todo]) -> UserAction
 }
 
 fn draw_todo_details(todo: &Todo, stdout: &mut Stdout) {
-    // Todo with additonal screen thin
     write!(stdout, "{}{}", termion::clear::All, termion::cursor::Hide).unwrap();
     stdout.flush().unwrap();
+
     draw_todo_detail_line("Name", &todo.name, 1);
 
     if todo.done {
