@@ -16,11 +16,6 @@ enum UserAction {
     Details,
 }
 
-// TODO: Change functionality so it always displays the todos from the initial query. if todos get
-// done, move them to the closed section and the other way arround.
-// add "r" to reload the query. indicate changed data and that the query isnt accurate anymore with a *: Query: * bla = bla
-// add "e" to edit the query.
-
 pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
     let mut selected_todo_index: usize = 0;
 
@@ -63,6 +58,32 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
             }
         }
     }
+}
+
+fn draw_header(query: &str) {
+    print!(
+        "{}{}Query:{} {}",
+        cursor::Goto(1, 1),
+        style::Bold,
+        style::Reset,
+        query
+    );
+    print!(
+        "{}─────────────────────────────────────",
+        cursor::Goto(1, 2)
+    );
+}
+
+fn draw_state_header<K: termion::color::Color>(state: &str, color: Fg<K>, count: usize, line: u16) {
+    print!(
+        "{}{}{}{}{}: {}",
+        cursor::Goto(1, line),
+        style::Bold,
+        color,
+        state,
+        style::Reset,
+        count,
+    );
 }
 
 fn draw_todo_lines(
@@ -110,32 +131,6 @@ fn listen_nav_key(selected_todo_index: &mut usize, todos: &[Todo]) -> UserAction
     }
 
     UserAction::Navigation
-}
-
-fn draw_state_header<K: termion::color::Color>(state: &str, color: Fg<K>, count: usize, line: u16) {
-    print!(
-        "{}{}{}{}{}: {}",
-        cursor::Goto(1, line),
-        style::Bold,
-        color,
-        state,
-        style::Reset,
-        count,
-    );
-}
-
-fn draw_header(query: &str) {
-    print!(
-        "{}{}Query:{} {}",
-        cursor::Goto(1, 1),
-        style::Bold,
-        style::Reset,
-        query
-    );
-    print!(
-        "{}─────────────────────────────────────",
-        cursor::Goto(1, 2)
-    );
 }
 
 fn draw_todo_details(todo: &Todo) {
