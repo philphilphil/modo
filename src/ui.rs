@@ -1,7 +1,7 @@
 use crate::Todo;
 use anyhow::Result;
-use modo::{md_writer, todo};
-use std::io::{stdin, stdout, Stdout, Write};
+use modo::md_writer;
+use std::io::{stdin, stdout};
 use std::path::Path;
 use termion::color::Fg;
 use termion::event::Key;
@@ -22,76 +22,41 @@ enum UserAction {
 // add "e" to edit the query.
 
 pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
-    // Outer loop with reload
     let mut selected_todo_index: usize = 0;
 
+    // Outer loop with reload
     loop {
         let todos = modo::modo(path, query)?;
         let (todos_open, todos_closed): (Vec<&Todo>, Vec<&Todo>) =
             todos.iter().partition(|t| !t.done);
-        let mut stdout = stdout().into_raw_mode().unwrap();
 
-        // Navigation
+        let mut _stdout = stdout().into_raw_mode().unwrap();
+
+        // Navigation loop. draws the todo and a > for the selected todo
         loop {
-            write!(stdout, "{}{}", clear::All, cursor::Hide).unwrap();
-            stdout.flush().unwrap();
-            println!(
-                "{}{}Query:{} {}",
-                cursor::Goto(1, 1),
-                style::Bold,
-                style::Reset,
-                query
-            );
-            println!(
-                "{}{}─────────────────────────────────────",
-                cursor::Goto(1, 2),
-                selected_todo_index
-            );
-            println!(
-                "{}{}{}Open:{} {}",
-                cursor::Goto(1, 4),
-                style::Bold,
-                color::Fg(color::Red),
-                style::Reset,
-                todos_open.len(),
-            );
+            print!("{}{}", clear::All, cursor::Hide);
+
+            draw_header(query);
+            draw_state_header("Open", color::Fg(color::Red), todos_open.len(), 4);
 
             let mut line: u16 = 5;
-            draw_todo_line(
-                &todos_open,
-                &mut line,
-                &selected_todo_index,
-                todos_open.len(),
-            );
+            draw_todo_lines(&todos_open, &mut line, &selected_todo_index, 5);
 
             line += 1;
-            println!(
-                "{}{}{}Closed:{} {}",
-                cursor::Goto(1, line),
-                style::Bold,
-                color::Fg(color::Green),
-                style::Reset,
-                todos_closed.len(),
-            );
+            draw_state_header("Closed", color::Fg(color::Green), todos_closed.len(), line);
 
             line += 1;
-            draw_todo_line(
-                &todos_closed,
-                &mut line,
-                &selected_todo_index,
-                todos_open.len(),
-            );
+            draw_todo_lines(&todos_closed, &mut line, &selected_todo_index, 7);
 
-            stdout.flush().unwrap();
             let key_result = listen_nav_key(&mut selected_todo_index, &todos);
             match key_result {
                 UserAction::Navigation => continue,
                 UserAction::Details => {
-                    draw_todo_details(&todos[selected_todo_index as usize], &mut stdout);
+                    draw_todo_details(&todos[selected_todo_index]);
                     break;
                 }
                 UserAction::Quit => {
-                    write!(stdout, "{}", termion::cursor::Show).unwrap();
+                    print!("{}", termion::cursor::Show);
                     return Ok(());
                 }
                 UserAction::Reload => break,
@@ -100,28 +65,21 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
     }
 }
 
-fn draw_todo_line(
-    todos: &Vec<&Todo>,
+fn draw_todo_lines(
+    todos: &[&Todo],
     line: &mut u16,
     selected_todo_index: &usize,
-    count_open: usize,
+    line_modifier: usize,
 ) {
     for todo in todos.iter() {
-        write!(stdout(), "{}", termion::cursor::Goto(1, *line)).unwrap();
+        print!("{}", termion::cursor::Goto(1, *line));
 
-        if *selected_todo_index >= count_open && *line >= 7 {
-            if *selected_todo_index == *line as usize - 7 {
-                println!("> {}", &todo);
-            } else {
-                println!("- {}", &todo);
-            }
+        if *selected_todo_index == *line as usize - line_modifier {
+            println!("> {}", &todo);
         } else {
-            if *selected_todo_index == *line as usize - 5 {
-                println!("> {}", &todo);
-            } else {
-                println!("- {}", &todo);
-            }
+            println!("- {}", &todo);
         }
+
         *line += 1;
     }
 }
@@ -154,9 +112,34 @@ fn listen_nav_key(selected_todo_index: &mut usize, todos: &[Todo]) -> UserAction
     UserAction::Navigation
 }
 
-fn draw_todo_details(todo: &Todo, stdout: &mut Stdout) {
-    write!(stdout, "{}{}", termion::clear::All, termion::cursor::Hide).unwrap();
-    stdout.flush().unwrap();
+fn draw_state_header<K: termion::color::Color>(state: &str, color: Fg<K>, count: usize, line: u16) {
+    print!(
+        "{}{}{}{}{}: {}",
+        cursor::Goto(1, line),
+        style::Bold,
+        color,
+        state,
+        style::Reset,
+        count,
+    );
+}
+
+fn draw_header(query: &str) {
+    print!(
+        "{}{}Query:{} {}",
+        cursor::Goto(1, 1),
+        style::Bold,
+        style::Reset,
+        query
+    );
+    print!(
+        "{}─────────────────────────────────────",
+        cursor::Goto(1, 2)
+    );
+}
+
+fn draw_todo_details(todo: &Todo) {
+    println!("{}", termion::clear::All);
 
     draw_todo_detail_line("Name", &todo.name, 1);
 
@@ -187,6 +170,7 @@ fn draw_todo_detail_line(attribute: &str, value: &str, line_no: u16) {
         value
     );
 }
+
 fn draw_todo_detail_line_color<K: termion::color::Color>(
     attribute: &str,
     value: &str,
