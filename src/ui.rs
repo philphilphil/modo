@@ -43,8 +43,9 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
                 query
             );
             println!(
-                "{}─────────────────────────────────────",
-                cursor::Goto(1, 2)
+                "{}{}─────────────────────────────────────",
+                cursor::Goto(1, 2),
+                selected_todo_index
             );
             println!(
                 "{}{}{}Open:{} {}",
@@ -56,7 +57,12 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
             );
 
             let mut line: u16 = 5;
-            draw_todo_line(&todos_open, &mut line, &selected_todo_index);
+            draw_todo_line(
+                &todos_open,
+                &mut line,
+                &selected_todo_index,
+                todos_open.len(),
+            );
 
             line += 1;
             println!(
@@ -69,24 +75,17 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
             );
 
             line += 1;
-            draw_todo_line(&todos_closed, &mut line, &selected_todo_index);
+            draw_todo_line(
+                &todos_closed,
+                &mut line,
+                &selected_todo_index,
+                todos_open.len(),
+            );
 
             stdout.flush().unwrap();
             let key_result = listen_nav_key(&mut selected_todo_index, &todos);
             match key_result {
-                UserAction::Navigation => {
-                    // if selected_todo_index > todos_open.len()
-                    //     && selected_todo_index < todos_open.len() + 2
-                    // {
-                    //     selected_todo_index = todos.len()
-                    // }
-                    if selected_todo_index >= todos_open.len()
-                        && selected_todo_index < todos_open.len() + 2
-                    {
-                        selected_todo_index += 2;
-                    }
-                    continue;
-                }
+                UserAction::Navigation => continue,
                 UserAction::Details => {
                     draw_todo_details(&todos[selected_todo_index as usize], &mut stdout);
                     break;
@@ -101,13 +100,27 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
     }
 }
 
-fn draw_todo_line(todos: &Vec<&Todo>, line: &mut u16, selected_todo_index: &usize) {
+fn draw_todo_line(
+    todos: &Vec<&Todo>,
+    line: &mut u16,
+    selected_todo_index: &usize,
+    count_open: usize,
+) {
     for todo in todos.iter() {
         write!(stdout(), "{}", termion::cursor::Goto(1, *line)).unwrap();
-        if *selected_todo_index == *line as usize - 5 {
-            println!("> {}", &todo);
+
+        if *selected_todo_index >= count_open && *line >= 7 {
+            if *selected_todo_index == *line as usize - 7 {
+                println!("> {}", &todo);
+            } else {
+                println!("- {}", &todo);
+            }
         } else {
-            println!("- {}", &todo);
+            if *selected_todo_index == *line as usize - 5 {
+                println!("> {}", &todo);
+            } else {
+                println!("- {}", &todo);
+            }
         }
         *line += 1;
     }
