@@ -11,7 +11,7 @@ mod ui;
 #[clap(author, version, about, long_about = None)]
 struct Args {
     /// Path to the root folder of the search
-    #[clap(short, long, parse(try_from_os_str=parse_path), value_name = "PATH")]
+    #[clap(short, long,parse(try_from_os_str=parse_path), value_name = "PATH")]
     path: Option<PathBuf>,
 
     /// Query for the todos
@@ -20,7 +20,13 @@ struct Args {
 }
 
 fn main() {
-    let args = Args::parse();
+    let mut args = Args::parse();
+
+    if args.path.is_none() {
+        let mut path = PathBuf::new();
+        path.push(".");
+        args.path = Some(path);
+    }
 
     if let Err(e) = ui::draw_ui(&args.query, args.path.as_ref().unwrap()) {
         println!("Error: {}", e);
