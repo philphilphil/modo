@@ -1,6 +1,5 @@
 use crate::Todo;
 use anyhow::Result;
-use modo::todo;
 use std::io::{stdin, stdout};
 use std::path::Path;
 use termion::color::Fg;
