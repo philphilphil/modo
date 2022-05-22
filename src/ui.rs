@@ -42,7 +42,7 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
 
             draw_header(query);
 
-            if todos.len() == 0 {
+            if todos.is_empty() {
                 print!("{}No todos found.", cursor::Goto(1, 3));
                 return Ok(());
             }
