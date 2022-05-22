@@ -154,16 +154,21 @@ fn draw_todo_details(todo: &mut Todo) {
     println!("{}", termion::clear::All);
 
     draw_todo_detail_line("Name", &todo.name, 1);
+    print!(
+        "{}─────────────────────────────────────",
+        cursor::Goto(1, 2)
+    );
 
     if todo.done {
-        draw_todo_detail_line_color("Status", "Done", color::Fg(color::Green), 2);
+        draw_todo_detail_line_color("Status", "Done", color::Fg(color::Green), 3);
     } else {
-        draw_todo_detail_line_color("Status", "Open", color::Fg(color::Red), 2);
+        draw_todo_detail_line_color("Status", "Open", color::Fg(color::Red), 3);
     }
 
-    draw_todo_detail_line("Heading", &todo.heading, 3);
-    draw_todo_detail_line("Filename", &todo.filename, 4);
-    draw_todo_detail_line("Lineno", &todo.line_no.to_string(), 5);
+    draw_todo_detail_line("Heading", &todo.heading, 4);
+    // draw_todo_detail_line("Filename", &todo.filename, 4);
+    draw_todo_detail_line("Path", todo.filepath.to_str().unwrap(), 6);
+    draw_todo_detail_line("Lineno", &todo.line_no.to_string(), 7);
 
     if let Some(c) = stdin().keys().next() {
         if let Key::Char('x') = c.unwrap() {

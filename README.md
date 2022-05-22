@@ -4,13 +4,13 @@ This is my first project in rust and will be improved over time. Some parts may 
 
 ## Usage
 call modo with a path to a folder with markdown files (--path or -p) and the query (--query or -q).
-Eg: `modo -p /User/phil/Notes -q 'done == false'`. 
+Eg: `modo -p /User/phil/Notes -q 'done == false'`. Empty path will use `.` as path. 
 
 ### Keybindings
 - `j/k` and `arrow up/down` for navigation in the todo list.
-- `x` or `enter` toggle todo done/open.
+- `x` toggles a todo done/open.
 - `d` shows todo details.
-  - `x` or `enter` toggle todo and returns to list.
+  - `x` toggle todo and returns to list.
   - `any other key` returns to list.
 - `r` reloads.
 - `q` quits.
