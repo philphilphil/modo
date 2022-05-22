@@ -1,6 +1,5 @@
 use crate::Todo;
 use anyhow::Result;
-use modo::md_writer;
 use std::io::{stdin, stdout};
 use std::path::Path;
 use termion::color::Fg;
@@ -11,43 +10,57 @@ use termion::{clear, color, cursor, style};
 
 enum UserAction {
     Navigation,
+    Toggle,
     Quit,
     Reload,
     Details,
 }
 
 pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
-    let mut selected_todo_index: usize = 0;
-
     // Outer loop with reload
+    let mut selected_todo_index: usize = 0;
     loop {
-        let todos = modo::modo(path, query)?;
-        let (todos_open, todos_closed): (Vec<&Todo>, Vec<&Todo>) =
-            todos.iter().partition(|t| !t.done);
+        let mut todos = modo::modo(path, query)?;
 
         let mut _stdout = stdout().into_raw_mode().unwrap();
 
         // Navigation loop. draws the todo and a > for the selected todo
         loop {
+            todos.sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
+            todos.sort_by(|a, b| a.done.cmp(&b.done));
+            let todos_open: Vec<String> = todos
+                .iter()
+                .filter(|t| !t.done)
+                .map(|t| t.name.clone())
+                .collect();
+            let todos_closed: Vec<String> = todos
+                .iter()
+                .filter(|t| t.done)
+                .map(|t| t.name.clone())
+                .collect();
             print!("{}{}", clear::All, cursor::Hide);
 
             draw_header(query);
             draw_state_header("Open", color::Fg(color::Red), todos_open.len(), 4);
 
             let mut line: u16 = 5;
-            draw_todo_lines(&todos_open, &mut line, &selected_todo_index, 5);
+            draw_todo_lines(&todos_open, &mut line, &selected_todo_index, 5, false);
 
             line += 1;
             draw_state_header("Closed", color::Fg(color::Green), todos_closed.len(), line);
 
             line += 1;
-            draw_todo_lines(&todos_closed, &mut line, &selected_todo_index, 7);
+            draw_todo_lines(&todos_closed, &mut line, &selected_todo_index, 7, true);
 
             let key_result = listen_nav_key(&mut selected_todo_index, &todos);
             match key_result {
                 UserAction::Navigation => continue,
                 UserAction::Details => {
-                    draw_todo_details(&todos[selected_todo_index]);
+                    draw_todo_details(&mut todos[selected_todo_index]);
+                    break;
+                }
+                UserAction::Toggle => {
+                    todos[selected_todo_index].toggle();
                     break;
                 }
                 UserAction::Quit => {
@@ -87,18 +100,20 @@ fn draw_state_header<K: termion::color::Color>(state: &str, color: Fg<K>, count:
 }
 
 fn draw_todo_lines(
-    todos: &[&Todo],
+    todos: &[String],
     line: &mut u16,
     selected_todo_index: &usize,
     line_modifier: usize,
+    done: bool,
 ) {
     for todo in todos.iter() {
         print!("{}", termion::cursor::Goto(1, *line));
+        let braces = if done { "[x]" } else { "[ ]" };
 
         if *selected_todo_index == *line as usize - line_modifier {
-            println!("> {}", &todo);
+            println!("> {} {}", braces, &todo);
         } else {
-            println!("- {}", &todo);
+            println!("- {} {}", braces, &todo);
         }
 
         *line += 1;
@@ -119,10 +134,7 @@ fn listen_nav_key(selected_todo_index: &mut usize, todos: &[Todo]) -> UserAction
                 }
             }
             Key::Char('q') => return UserAction::Quit, // q
-            Key::Char('x') => {
-                md_writer::toggle_todo(&todos[*selected_todo_index]).unwrap();
-                return UserAction::Reload;
-            }
+            Key::Char('x') => return UserAction::Toggle,
             Key::Char('r') => return UserAction::Reload, // r
             Key::Char('d') => return UserAction::Details, // d
             _ => {}
@@ -133,7 +145,7 @@ fn listen_nav_key(selected_todo_index: &mut usize, todos: &[Todo]) -> UserAction
     UserAction::Navigation
 }
 
-fn draw_todo_details(todo: &Todo) {
+fn draw_todo_details(todo: &mut Todo) {
     println!("{}", termion::clear::All);
 
     draw_todo_detail_line("Name", &todo.name, 1);
@@ -150,7 +162,7 @@ fn draw_todo_details(todo: &Todo) {
 
     if let Some(c) = stdin().keys().next() {
         if let Key::Char('x') = c.unwrap() {
-            md_writer::toggle_todo(todo).unwrap();
+            todo.toggle();
         }
     }
 }

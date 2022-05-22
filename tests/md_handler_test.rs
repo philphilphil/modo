@@ -27,7 +27,7 @@ fn test_tick_single_file() {
     md_reader::load_todos_from_dir(dir.path(), &mut todos).unwrap();
     assert_eq!(todos[0].done, false);
 
-    md_writer::toggle_todo(&todos[0]).unwrap();
+    md_writer::toggle_todo(&mut todos[0]).unwrap();
     todos = vec![];
     md_reader::load_todos_from_dir(dir.path(), &mut todos).unwrap();
     assert_eq!(todos[0].done, true);
@@ -149,8 +149,8 @@ fn test_parse_and_tick_multiple_files_multiple_todos() {
     let mut open_todos_count = todos.iter().filter(|t| !t.done).count();
     assert_eq!(open_todos_count, 8);
 
-    md_writer::toggle_todo(&todos[1]).unwrap();
-    md_writer::toggle_todo(&todos[2]).unwrap();
+    md_writer::toggle_todo(&mut todos[1]).unwrap();
+    md_writer::toggle_todo(&mut todos[2]).unwrap();
     todos = vec![];
     md_reader::load_todos_from_dir(dir.path(), &mut todos).unwrap();
     assert_eq!(todos[1].done, true);

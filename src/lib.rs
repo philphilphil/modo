@@ -26,8 +26,6 @@ pub fn modo(path: &Path, query: &str) -> Result<Vec<Todo>> {
     //println!("DEBUG: {:#?}", todos);
     //println!("DEBUG: Todo count: {}", todos.len());
     filter::filter(&query, &mut todos);
-    todos.sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
-    todos.sort_by(|a, b| a.done.cmp(&b.done));
     //println!("DEBUG: Todo count after filter: {}", todos.len());
 
     if todos.is_empty() {

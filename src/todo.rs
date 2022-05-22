@@ -1,6 +1,8 @@
 use std::fmt::{Display, Formatter, Result};
 use std::path::PathBuf;
 
+use crate::md_writer;
+
 #[derive(Debug, Clone)]
 pub struct Todo {
     pub name: String,
@@ -33,6 +35,12 @@ impl Todo {
             filepath,
             heading,
         }
+    }
+}
+
+impl Todo {
+    pub fn toggle(&mut self) {
+        md_writer::toggle_todo(self).unwrap();
     }
 }
 

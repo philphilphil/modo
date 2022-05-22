@@ -3,7 +3,7 @@ use std::fs;
 use std::io;
 use std::path::Path;
 
-pub fn toggle_todo(todo: &Todo) -> io::Result<()> {
+pub fn toggle_todo(todo: &mut Todo) -> io::Result<()> {
     let data = fs::read_to_string(Path::new(&todo.filepath))?;
     let mut new_data: String = String::new();
 
@@ -12,8 +12,10 @@ pub fn toggle_todo(todo: &Todo) -> io::Result<()> {
         if line_no == todo.line_no {
             if todo.done {
                 new_data += &line.replace("- [x]", "- [ ]");
+                todo.done = false;
             } else {
                 new_data += &line.replace("- [ ]", "- [x]");
+                todo.done = true;
             }
         } else {
             new_data += line;
