@@ -1,5 +1,6 @@
 use crate::Todo;
 use anyhow::Result;
+use modo::todo;
 use std::io::{stdin, stdout};
 use std::path::Path;
 use termion::color::Fg;
@@ -21,7 +22,6 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
     let mut selected_todo_index: usize = 0;
     loop {
         let mut todos = modo::modo(path, query)?;
-
         let mut _stdout = stdout().into_raw_mode().unwrap();
 
         // Navigation loop. draws the todo and a > for the selected todo
@@ -41,6 +41,12 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
             print!("{}{}", clear::All, cursor::Hide);
 
             draw_header(query);
+
+            if todos.len() == 0 {
+                print!("{}No todos found.", cursor::Goto(1, 3));
+                return Ok(());
+            }
+
             draw_state_header("Open", color::Fg(color::Red), todos_open.len(), 4);
 
             let mut line: u16 = 5;

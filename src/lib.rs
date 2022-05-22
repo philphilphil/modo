@@ -28,9 +28,7 @@ pub fn modo(path: &Path, query: &str) -> Result<Vec<Todo>> {
     filter::filter(&query, &mut todos);
     //println!("DEBUG: Todo count after filter: {}", todos.len());
 
-    if todos.is_empty() {
-        println!("No todos found.");
-    }
+    print!("{}", termion::cursor::Show);
 
     Ok(todos)
 }
