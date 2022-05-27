@@ -17,11 +17,21 @@ enum UserAction {
 }
 
 pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
-    // Outer loop with reload
     let mut selected_todo_index: usize = 0;
+    // Outer loop with reload
     loop {
         let mut todos = modo::modo(path, query)?;
         let mut _stdout = stdout().into_raw_mode().unwrap();
+
+        if todos.is_empty() {
+            print!("{}No todos found.", cursor::Goto(1, 3));
+            print!("{}", termion::cursor::Show);
+            return Ok(());
+        }
+
+        if selected_todo_index > todos.len() - 1 {
+            selected_todo_index = todos.len() - 1
+        }
 
         // Navigation loop. draws the todo and a > for the selected todo
         loop {
@@ -40,11 +50,6 @@ pub fn draw_ui(query: &str, path: &Path) -> Result<()> {
             print!("{}{}", clear::All, cursor::Hide);
 
             draw_header(query);
-
-            if todos.is_empty() {
-                print!("{}No todos found.", cursor::Goto(1, 3));
-                return Ok(());
-            }
 
             draw_state_header("Open", color::Fg(color::Red), todos_open.len(), 4);
 
