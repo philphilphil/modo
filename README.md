@@ -1,7 +1,7 @@
 # modo
 markdown todo cli interface is a small application to query markdown todos with a SQL-like syntax.
 This is my first project in rust and will be improved over time. Some parts may be implemented not ideal.
-
+![](modo-demo.gif)
 ## Usage
 call modo with a path to a folder with markdown files (--path or -p) and the query (--query or -q).
 Eg: `modo -p /User/phil/Notes -q 'done == false'`. Empty path will use `.`. 
