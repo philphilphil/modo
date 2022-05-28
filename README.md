@@ -44,7 +44,7 @@ Filters always bear upon a single todo.
 - `done == true and path !< Arbeit`
 - `done == false and heading == Daily`
 - `heading == Daily`
-- `path << Work and path !< customer`
+- `path << work and path !< customer and done == false`
 
 ## Feature ideas
 - Ordering todos via query 
