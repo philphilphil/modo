@@ -1,5 +1,5 @@
-use crate::Todo;
 use anyhow::Result;
+use md_todo::todo::Todo;
 use std::io::{stdin, stdout};
 use std::path::Path;
 use termion::color::Fg;
@@ -170,7 +170,7 @@ fn draw_todo_details(todo: &mut Todo) {
         draw_todo_detail_line_color("Status", "Open", color::Fg(color::Red), 3);
     }
 
-    draw_todo_detail_line("Heading", &todo.heading, 4);
+    draw_todo_detail_line("Heading", &todo.headings[0], 4);
     // draw_todo_detail_line("Filename", &todo.filename, 4);
     draw_todo_detail_line("Path", todo.filepath.to_str().unwrap(), 6);
     draw_todo_detail_line("Lineno", &todo.line_no.to_string(), 7);

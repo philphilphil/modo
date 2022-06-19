@@ -1,11 +1,10 @@
 mod common;
 use common::md_test_file_creator;
-use modo::{filter, md_reader, query::Query, todo::Todo};
+use modo::{filter, query::Query};
 use tempfile::TempDir;
 
 #[test]
 fn test_querys_1() {
-    let mut todos: Vec<Todo> = vec![];
     let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file2.md").unwrap();
@@ -18,42 +17,40 @@ fn test_querys_1() {
     let _dir_depth2 = TempDir::new_in(&dir_depth1).unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth2, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&_dir_depth2, "file2.md").unwrap();
-    md_reader::load_todos_from_dir(dir.path(), &mut todos).unwrap();
 
-    let mut todos2 = todos.clone();
+    let mut todos = md_todo::get_todos_from_path(&dir).unwrap();
     let query_string = String::from("done == true and filename << file");
     let mut query = Query::new(&query_string);
     assert!(query.parse().is_ok());
-    filter::filter(&query, &mut todos2);
-    assert_eq!(todos2.len(), 8, "{}", query_string);
+    filter::filter(&query, &mut todos);
+    assert_eq!(todos.len(), 8, "{}", query_string);
 
-    let mut todos3 = todos.clone();
+    let mut todos = md_todo::get_todos_from_path(&dir).unwrap();
     let query_string = String::from("path << file and filename << 2 and done != false");
     let mut query = Query::new(&query_string);
     assert!(query.parse().is_ok());
-    filter::filter(&query, &mut todos3);
-    assert_eq!(todos3.len(), 4, "{}", query_string);
+    filter::filter(&query, &mut todos);
+    assert_eq!(todos.len(), 4, "{}", query_string);
 
-    let mut todos4 = todos.clone();
+    let mut todos = md_todo::get_todos_from_path(&dir).unwrap();
     let query_string = String::from("path !< file and filename << 2 and done != false");
     let mut query = Query::new(&query_string);
     assert!(query.parse().is_ok());
-    filter::filter(&query, &mut todos4);
-    assert_eq!(todos4.len(), 0, "{}", query_string);
+    filter::filter(&query, &mut todos);
+    assert_eq!(todos.len(), 0, "{}", query_string);
 
-    let mut todos5 = todos.clone();
+    let mut todos = md_todo::get_todos_from_path(&dir).unwrap();
     let query_string = String::from("filename << 2 << head << a");
     let mut query = Query::new(&query_string);
     assert!(query.parse().is_ok());
-    filter::filter(&query, &mut todos5);
-    assert_eq!(todos5.len(), 0, "{}", query_string);
+    filter::filter(&query, &mut todos);
+    assert_eq!(todos.len(), 0, "{}", query_string);
 
     dir.close().unwrap();
 }
 
 #[test]
 fn test_querys_2() {
-    let mut todos: Vec<Todo> = vec![];
     let dir = TempDir::new().unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file1.md").unwrap();
     md_test_file_creator::simple_5_todos_4_open(&dir, "file2.md").unwrap();
@@ -73,35 +70,34 @@ fn test_querys_2() {
     let _dir_depth7 = TempDir::new_in(&_dir_depth6).unwrap();
     md_test_file_creator::complex_23_todos_15_open(&_dir_depth7, "file1.md").unwrap();
     md_test_file_creator::complex_23_todos_15_open(&_dir_depth7, "file2.md").unwrap();
-    md_reader::load_todos_from_dir(dir.path(), &mut todos).unwrap();
 
-    let mut todos2 = todos.clone();
+    let mut todos = md_todo::get_todos_from_path(&dir).unwrap();
     let query_string = String::from("done == false and filename << file2.md");
     let mut query = Query::new(&query_string);
     assert!(query.parse().is_ok());
-    filter::filter(&query, &mut todos2);
-    assert_eq!(todos2.len(), 42, "{}", query_string);
+    filter::filter(&query, &mut todos);
+    assert_eq!(todos.len(), 42, "{}", query_string);
 
-    let mut todos2 = todos.clone();
+    let mut todos = md_todo::get_todos_from_path(&dir).unwrap();
     let query_string = String::from("");
     let mut query = Query::new(&query_string);
     assert!(query.parse().is_ok());
-    filter::filter(&query, &mut todos2);
-    assert_eq!(todos2.len(), 122, "{}", query_string);
+    filter::filter(&query, &mut todos);
+    assert_eq!(todos.len(), 122, "{}", query_string);
 
-    let mut todos3 = todos.clone();
+    let mut todos = md_todo::get_todos_from_path(&dir).unwrap();
     let query_string = String::from("name << todo and heading << work");
     let mut query = Query::new(&query_string);
     assert!(query.parse().is_ok());
-    filter::filter(&query, &mut todos3);
-    assert_eq!(todos3.len(), 24, "{}", query_string);
+    filter::filter(&query, &mut todos);
+    assert_eq!(todos.len(), 24, "{}", query_string);
 
-    let mut todos4 = todos.clone();
+    let mut todos = md_todo::get_todos_from_path(&dir).unwrap();
     let query_string = String::from("name == todo and heading != work and filepath !< file1");
     let mut query = Query::new(&query_string);
     assert!(query.parse().is_ok());
-    filter::filter(&query, &mut todos4);
-    assert_eq!(todos4.len(), 6, "{}", query_string);
+    filter::filter(&query, &mut todos);
+    assert_eq!(todos.len(), 6, "{}", query_string);
 
     dir.close().unwrap();
 }

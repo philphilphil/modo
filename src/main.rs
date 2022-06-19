@@ -1,5 +1,4 @@
 use clap::Parser;
-use modo::todo::Todo;
 use std::{
     ffi::OsStr,
     path::{Path, PathBuf},
