@@ -25,21 +25,19 @@ pub fn filter(query: &Query, todos: &mut Vec<Todo>) {
                 Operator::Contains => todos.retain(|t| {
                     t.filepath
                         .to_string_lossy()
-                        .to_string()
+                        .to_lowercase()
                         .contains(&clause.expr_string)
                 }),
                 Operator::DoesNotContain => todos.retain(|t| {
                     !t.filepath
                         .to_string_lossy()
-                        .to_string()
+                        .to_lowercase()
                         .contains(&clause.expr_string)
                 }),
-                Operator::Equals => {
-                    todos.retain(|t| t.filepath.to_string_lossy() == clause.expr_string)
-                }
-                Operator::DoesNotEqual => {
-                    todos.retain(|t| t.filepath.to_string_lossy() != clause.expr_string)
-                }
+                Operator::Equals => todos
+                    .retain(|t| t.filepath.to_string_lossy().to_lowercase() == clause.expr_string),
+                Operator::DoesNotEqual => todos
+                    .retain(|t| t.filepath.to_string_lossy().to_lowercase() != clause.expr_string),
             },
             Property::FileName => match clause.operator {
                 Operator::Contains => todos.retain(|t| t.filename.contains(&clause.expr_string)),

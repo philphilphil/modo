@@ -93,7 +93,7 @@ fn test_querys_2() {
     assert_eq!(todos.len(), 24, "{}", query_string);
 
     let mut todos = md_todo::get_todos_from_path(&dir).unwrap();
-    let query_string = String::from("name == todo and heading != work and filepath !< file1");
+    let query_string = String::from("name == todo and heading != work and path !< file2");
     let mut query = Query::new(&query_string);
     assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos);

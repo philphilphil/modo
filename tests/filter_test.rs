@@ -1,7 +1,7 @@
 mod common;
 use common::md_test_file_creator;
 use modo::{filter, query::Query};
-use tempfile::TempDir;
+use tempfile::{Builder, TempDir};
 
 #[test]
 fn test_filter_done() {
@@ -153,26 +153,40 @@ fn test_filter_filename() {
 #[test]
 fn test_filter_path() {
     let dir = TempDir::new().unwrap();
+    let dir_private = Builder::new().prefix("private").tempdir_in(&dir).unwrap();
+    let dir_work = Builder::new().prefix("Work").tempdir_in(&dir).unwrap();
+    let dir_work_cus = Builder::new().prefix("cust").tempdir_in(&dir_work).unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file0.md").unwrap();
     md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file1.md").unwrap();
-    md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file2.md").unwrap();
-    md_test_file_creator::simple_5_todos_3_open_with_headings(&dir, "file3.md").unwrap();
+    md_test_file_creator::simple_5_todos_3_open_with_headings(&dir_private, "file3.md").unwrap();
+    md_test_file_creator::simple_5_todos_3_open_with_headings(&dir_work, "file2.md").unwrap();
+    md_test_file_creator::simple_1_open_todo(&dir_work, "file4.md").unwrap();
+    md_test_file_creator::simple_1_open_todo(&dir_work_cus, "file5.md").unwrap();
 
     // contains
     let mut todos = md_todo::get_todos_from_path(&dir).unwrap();
-    let query_string = String::from("path << /file");
+    assert_eq!(todos.len(), 22); // all todos pre filter
+    let query_string = String::from("path << work");
     let mut query = Query::new(&query_string);
     assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos);
-    assert_eq!(todos.len(), 20, "op: contains");
+    assert_eq!(todos.len(), 7, "op: contains");
+
+    // contains deeper
+    let mut todos = md_todo::get_todos_from_path(&dir).unwrap();
+    let query_string = String::from("path << cus");
+    let mut query = Query::new(&query_string);
+    assert!(query.parse().is_ok());
+    filter::filter(&query, &mut todos);
+    assert_eq!(todos.len(), 1, "op: contains");
 
     // does not contain
     let mut todos = md_todo::get_todos_from_path(&dir).unwrap();
-    let query_string = String::from("path !< /file2");
+    let query_string = String::from("path !< private");
     let mut query = Query::new(&query_string);
     assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos);
-    assert_eq!(todos.len(), 15, "op: does not contain");
+    assert_eq!(todos.len(), 17, "op: does not contain");
 
     // equals
     let mut todos = md_todo::get_todos_from_path(&dir).unwrap();
@@ -184,11 +198,11 @@ fn test_filter_path() {
 
     // does not equal
     let mut todos = md_todo::get_todos_from_path(&dir).unwrap();
-    let query_string = String::from("path != /file1.md");
+    let query_string = String::from("path != bla/blub/file1.md");
     let mut query = Query::new(&query_string);
     assert!(query.parse().is_ok());
     filter::filter(&query, &mut todos);
-    assert_eq!(todos.len(), 20, "op: does not equal");
+    assert_eq!(todos.len(), 22, "op: does not equal");
 
     dir.close().unwrap();
 }
