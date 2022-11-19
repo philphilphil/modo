@@ -1,6 +1,6 @@
 [package]
 name = "modo"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -10,6 +10,6 @@ edition = "2021"
 regex = "1"
 tempfile = "3"
 anyhow = "1.0.56"
-clap = { version = "3.1.6", features = ["derive"] }
-termion = "1.5.6"
-md-todo = "0.1.1"
+clap = { version = "3", features = ["derive"] }
+termion = "2.0.1"
+md-todo = "0.1.2"
